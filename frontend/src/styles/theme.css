@@ -1,0 +1,59 @@
+/* Simple Theme Variables */
+
+:root {
+  --bg: #020617;
+  --card: rgba(255,255,255,0.05);
+  --text: #ffffff;
+  --accent: #39D1DC;
+
+  /* Theme compatibility aliases for existing components */
+  --bg-color: var(--bg);
+  --bg-secondary: rgba(255,255,255,0.03);
+  --bg-tertiary: rgba(255,255,255,0.02);
+  --card-bg: var(--card);
+  --text-primary: var(--text);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --accent-color: var(--accent);
+  --accent-hover: #ED80FD;
+  --accent-gradient: linear-gradient(135deg, #39D1DC, #ED80FD);
+  --success-color: #22c55e;
+  --warning-color: #eab308;
+  --danger-color: #ef4444;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Shadows and sizing */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 5px 20px rgba(57, 209, 220, 0.4);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --transition-fast: 0.15s ease-in-out;
+  --transition-smooth: 0.3s ease;
+  --transition-bouncy: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+[data-theme="light"] {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #1e293b;
+  --accent: #2563eb;
+
+  /* Theme compatibility aliases */
+  --bg-color: var(--bg);
+  --bg-secondary: var(--card);
+  --bg-tertiary: #e2e8f0;
+  --card-bg: var(--card);
+  --text-primary: var(--text);
+  --text-secondary: #475569;
+  --accent-color: var(--accent);
+  --accent-hover: #1d4ed8;
+  --accent-gradient: var(--accent);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 10px rgba(37, 99, 235, 0.1);
+}

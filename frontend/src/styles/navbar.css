@@ -1,0 +1,79 @@
+.navbar {
+    height: 80px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.brand-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+}
+
+.tagline {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin: 0.125rem 0 0 2.25rem;
+    font-weight: 500;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.theme-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    background-color: var(--glass-border);
+}
+
+.theme-btn:hover {
+    background-color: var(--border-color);
+    transform: scale(1.05);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

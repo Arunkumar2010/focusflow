@@ -1,0 +1,138 @@
+.productivity-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+}
+
+.productivity-header {
+    margin-bottom: 2rem;
+}
+
+.productivity-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.productivity-subtitle {
+    color: var(--text-secondary);
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.metric-title {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1;
+}
+
+.metric-value.primary-text {
+    color: var(--text-primary);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: stretch;
+}
+
+@media (max-width: 900px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-box {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottom-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.timer-box {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.empty-chart {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Productivity Chart Component Specific */
+
+.productivity-chart-container {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.productivity-chart-title {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.productivity-chart-wrapper {
+    width: 100%;
+    height: 300px;
+}
+
+.productivity-chart-empty {
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-secondary);
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-color);
+}
