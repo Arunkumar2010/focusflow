@@ -17,14 +17,33 @@ FocusFlow is a web-based application designed for students to manage academic ta
 ## 🛠 Technologies Used
 - Frontend: React.js
 - Backend: Node.js + Express.js
-- Database: (Optional / In-memory)
+- Database: MongoDB
 - Tools: VS Code, MongoDB Compass
 
 ---
 
-## ⚙️ Installation Steps
+## 📂 Project Structure
+- **frontend/**: React + Vite frontend application.
+- **backend/**: Node.js + Express backend API.
+- **[FocusFlow Documentation](FocusFlow_Documentation.md)**: Detailed project architecture.
+
+---
+
+## ⚙️ Installation & Running
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/Arunkumar2010/focusflow.git
 cd focusflow
+```
+
+### 2. Backend Setup
+1. Navigate to `backend/`
+2. Run `npm install`
+3. Create a `.env` file based on provided templates.
+4. Run `npm run dev`
+
+### 3. Frontend Setup
+1. Navigate to `frontend/`
+2. Run `npm install`
+3. Run `npm run dev`

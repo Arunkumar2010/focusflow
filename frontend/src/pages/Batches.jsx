@@ -18,8 +18,11 @@ const Batches = () => {
     const [selectedBatch, setSelectedBatch] = useState(null);
     const [studentEmail, setStudentEmail] = useState('');
     const [actionLoading, setActionLoading] = useState(false);
+    const createModalRef = React.useRef();
+    const addStudentModalRef = React.useRef();
     
     const [formData, setFormData] = useState({
+
         name: '',
         subject: ''
     });
@@ -168,8 +171,12 @@ const Batches = () => {
 
                 {/* Modals */}
                 {showCreateModal && (
-                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
-                        <Card className="animate-fade-in" style={{ width: '100%', maxWidth: '500px' }}>
+                    <div 
+                        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }} 
+                        onClick={(e) => { if (createModalRef.current && !createModalRef.current.contains(e.target)) setShowCreateModal(false); }}
+                    >
+                        <Card ref={createModalRef} className="animate-fade-in" style={{ width: '100%', maxWidth: '500px' }}>
+
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                                 <h2>Create New Batch</h2>
                                 <X style={{ cursor: 'pointer' }} onClick={() => { setShowCreateModal(false); setError(null); }} />
@@ -195,8 +202,12 @@ const Batches = () => {
                 )}
 
                 {showAddStudentModal && (
-                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
-                        <Card className="animate-fade-in" style={{ width: '100%', maxWidth: '400px' }}>
+                    <div 
+                        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }} 
+                        onClick={(e) => { if (addStudentModalRef.current && !addStudentModalRef.current.contains(e.target)) setShowAddStudentModal(false); }}
+                    >
+                        <Card ref={addStudentModalRef} className="animate-fade-in" style={{ width: '100%', maxWidth: '400px' }}>
+
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                                 <h2>Add Student</h2>
                                 <X style={{ cursor: 'pointer' }} onClick={() => { setShowAddStudentModal(false); setError(null); }} />

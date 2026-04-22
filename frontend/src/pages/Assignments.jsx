@@ -22,8 +22,10 @@ const Assignments = () => {
     const [submissionContent, setSubmissionContent] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
+    const modalRef = React.useRef();
 
     const [formData, setFormData] = useState({
+
         title: '',
         description: '',
         batchId: '',
@@ -106,6 +108,7 @@ const Assignments = () => {
         s => s.studentId === user?._id || s.studentId?._id === user?._id
     );
 
+
     const getStatus = (assign) => {
         const submission = assign.submissions?.find(
             s => s.studentId === user?._id || s.studentId?._id === user?._id
@@ -149,12 +152,21 @@ const Assignments = () => {
                                     onClick={() => setSelectedId(assign._id)}
                                     style={{ animationDelay: `${index * 0.1}s` }}
                                 >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                                        <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{assign.title}</h3>
-                                        <span className={`status-badge status-${status.type}`} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', gap: '1rem', overflow: 'hidden' }}>
+                                        <h3 style={{ 
+                                            margin: 0, 
+                                            fontSize: '1.1rem', 
+                                            minWidth: 0, 
+                                            whiteSpace: 'nowrap', 
+                                            overflow: 'hidden', 
+                                            textOverflow: 'ellipsis' 
+                                        }}>{assign.title}</h3>
+
+                                        <span className={`status-badge status-${status.type}`} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', borderRadius: '20px', flexShrink: 0 }}>
                                             {status.label}
                                         </span>
                                     </div>
+
                                     <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', opacity: 0.6 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                             <Calendar size={14} /> Due: {new Date(assign.dueDate).toLocaleDateString()}
@@ -179,15 +191,16 @@ const Assignments = () => {
                             <Card style={{ padding: '2rem', minHeight: '400px' }}>
                                 <div style={{ marginBottom: '2rem' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                        <h2 style={{ margin: 0 }}>Your Work</h2>
+                                        <h2 style={{ margin: 0 }}>{selectedAssignment?.title || 'Your Work'}</h2>
                                         <StatusBadge status={getStatus(selectedAssignment)} />
                                     </div>
                                     <div style={{ fontSize: '0.9rem', opacity: 0.6, marginBottom: '1.5rem' }}>
-                                        Assigned by {selectedAssignment.teacherId?.name || 'Instructor'} • {new Date(selectedAssignment.createdAt).toLocaleDateString()}
+                                        Assigned by {selectedAssignment?.teacherId?.name || 'Instructor'} • {selectedAssignment?.createdAt ? new Date(selectedAssignment.createdAt).toLocaleDateString() : 'N/A'}
                                     </div>
                                     <p style={{ lineHeight: '1.6', opacity: 0.9, whiteSpace: 'pre-wrap' }}>
-                                        {selectedAssignment.description || 'No detailed instructions provided.'}
+                                        {selectedAssignment?.description || 'No detailed instructions provided.'}
                                     </p>
+
                                 </div>
 
                                 {!isTeacher && (
@@ -241,8 +254,12 @@ const Assignments = () => {
             )}
 
             {showModal && (
-                <div className="modal-overlay">
-                    <div className="modal animate-fade-in shadow-lg">
+                <div 
+                    className="modal-overlay" 
+                    onClick={(e) => { if (modalRef.current && !modalRef.current.contains(e.target)) setShowModal(false); }}
+                >
+                    <div ref={modalRef} className="modal animate-fade-in shadow-lg">
+
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
                             <h2 style={{ margin: 0 }}>Create Assignment</h2>
                             <X style={{ cursor: 'pointer', opacity: 0.6 }} onClick={() => { setShowModal(false); setError(null); }} />

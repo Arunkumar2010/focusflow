@@ -391,7 +391,16 @@ textarea {
   cursor: pointer;
   border-left: 4px solid var(--border-color);
   transition: .3s;
+  overflow: hidden;
 }
+
+.assignment-card h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
 
 .assignment-card.active {
   border-left-color: #ED80FD;
@@ -402,9 +411,10 @@ textarea {
   transform: translateX(5px);
 }
 
-.status-missing { color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.1); }
-.status-pending { color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); background: rgba(245, 158, 11, 0.1); }
-.status-submitted { color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1); }
+.status-missing { color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.1); flex-shrink: 0; }
+.status-pending { color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); background: rgba(245, 158, 11, 0.1); flex-shrink: 0; }
+.status-submitted { color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1); flex-shrink: 0; }
+
 
 /* Sidebar & Navigation refinements */
 .sidebar-icon-wrapper {
