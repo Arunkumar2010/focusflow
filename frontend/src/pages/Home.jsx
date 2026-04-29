@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   Layout, 
   Users, 
@@ -10,13 +11,19 @@ import {
   ShieldCheck,
   Zap,
   Clock,
-  Sparkles
+  Sparkles,
+  Rocket,
+  GraduationCap,
+  Shield
 } from 'lucide-react';
 import { GlassCard, GlowButton, GradientText, NeonBadge } from '../components/ui/FuturisticUI';
 import '../styles/Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
   const features = [
     {
@@ -57,128 +64,243 @@ const Home = () => {
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <div className="home-page">
-      {/* 🚀 FUTURISTIC HERO */}
+    <div className="home-page-v2">
+      {/* 🚀 PREMIUM HERO SECTION */}
       <section className="hero-section">
-        <div className="home-container">
+        <motion.div 
+          className="home-container"
+          style={{ opacity, scale }}
+        >
           <div className="hero-content">
-            <NeonBadge className="mb-4">✨ v2.0 • AI-Powered Productivity</NeonBadge>
-            <h1 className="hero-title animate-in">
-              The Future of <GradientText>Academic Excellence</GradientText>
-            </h1>
-            <p className="hero-description animate-in" style={{ animationDelay: '0.2s' }}>
-              FocusFlow is a high-end productivity engine for modern students and educators. 
-              Experience a unified workspace where tasks, assignments, and live classes converge into a single, futuristic flow.
-            </p>
-            <div className="hero-btns animate-in" style={{ animationDelay: '0.4s' }}>
-              <GlowButton onClick={() => navigate('/login')}>
-                🚀 Launch App <ArrowRight size={20} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <NeonBadge className="mb-4">✨ v2.0 • The Future of Learning</NeonBadge>
+            </motion.div>
+            
+            <motion.h1 
+              className="hero-title"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Master Your <br />
+              <motion.span 
+                className="gradient-text-animated"
+                animate={{ 
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+              >
+                Academic Flow
+              </motion.span>
+            </motion.h1>
+            
+            <motion.p 
+              className="hero-description"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Experience the unified OS for education. FocusFlow bridges the gap between students and teachers through high-velocity task management and immersive live synchronization.
+            </motion.p>
+            
+            <motion.div 
+              className="hero-btns"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <GlowButton onClick={() => navigate('/login')} className="hero-primary-btn">
+                <Rocket size={20} /> Launch Application
               </GlowButton>
-              <button className="btn-secondary-outline" onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}>
-                Explore Core Features
-              </button>
-            </div>
+              <motion.button 
+                className="btn-glass-secondary" 
+                onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Explore Modules <ArrowRight size={18} />
+              </motion.button>
+            </motion.div>
           </div>
-        </div>
+
+          <motion.div 
+            className="hero-visual"
+            initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            <div className="hero-orb"></div>
+            <div className="hero-orb secondary"></div>
+            <GlassCard className="hero-preview-card">
+              <div className="preview-header">
+                <div className="dot"></div>
+                <div className="dot"></div>
+                <div className="dot"></div>
+              </div>
+              <div className="preview-content">
+                <div className="skeleton-line long"></div>
+                <div className="skeleton-grid">
+                  <div className="skeleton-box"></div>
+                  <div className="skeleton-box"></div>
+                </div>
+                <div className="skeleton-line short"></div>
+              </div>
+            </GlassCard>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* 🧊 GLASS FEATURES */}
+      {/* 🧊 FEATURES SECTION */}
       <section id="features" className="features-section">
         <div className="home-container">
-          <div className="section-header">
-            <h2 className="section-title">Engineered for <GradientText>Performance</GradientText></h2>
-            <p className="section-subtitle">
-              Built on a foundation of speed and simplicity, our tools empower you to achieve more.
-            </p>
-          </div>
-          <div className="features-grid">
+          <motion.div 
+            className="section-header"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
+            <motion.h2 className="section-title" variants={itemVariants}>
+              High-Velocity <GradientText>Modules</GradientText>
+            </motion.h2>
+            <motion.p className="section-subtitle" variants={itemVariants}>
+              Precision tools engineered for peak academic performance and seamless collaboration.
+            </motion.p>
+          </motion.div>
+          
+          <motion.div 
+            className="features-grid"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={containerVariants}
+          >
             {features.map((feature, index) => (
-              <GlassCard key={index} className="feature-card animate-in" style={{ animationDelay: `${0.1 * index}s` }}>
-                <div className="feature-icon" style={{ color: feature.color === 'primary' ? 'var(--primary)' : 'var(--secondary)' }}>
-                  {feature.icon}
-                </div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </GlassCard>
+              <motion.div key={index} variants={itemVariants}>
+                <GlassCard className="feature-card-v2 glass-hover">
+                  <div className="feature-glow" style={{ background: feature.color === 'primary' ? 'var(--primary-glow)' : 'var(--secondary-glow)' }}></div>
+                  <div className="feature-icon-v2">
+                    {feature.icon}
+                  </div>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
+                </GlassCard>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* 👨‍💻 ROLES GRID */}
+      {/* 👥 ROLE SELECTOR SECTION */}
       <section className="roles-section">
         <div className="home-container">
-          <div className="roles-grid">
-            <GlassCard className="role-card">
-              <div className="role-header">
-                <span className="role-emoji">🎓</span>
-                <GradientText>For Students</GradientText>
+          <div className="roles-layout">
+            <motion.div 
+              className="role-v2-card student"
+              whileHover={{ y: -10 }}
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <div className="role-v2-icon"><GraduationCap size={40} /></div>
+              <h2>Students 🎓</h2>
+              <p>Crush assignments, track progress, and never miss a live session with your personalized dashboard.</p>
+              <div className="role-features">
+                <span>✨ Smart Tracking</span>
+                <span>✨ Peer Sync</span>
+                <span>✨ Focus Engine</span>
               </div>
-              <ul className="role-list">
-                <li>Automated assignment tracking</li>
-                <li>Immersive productivity dashboard</li>
-                <li>One-tap class attendance</li>
-                <li>Visual achievement milestones</li>
-              </ul>
-            </GlassCard>
-            <GlassCard className="role-card">
-              <div className="role-header">
-                <span className="role-emoji">🧑‍🏫</span>
-                <GradientText>For Teachers</GradientText>
+            </motion.div>
+
+            <motion.div 
+              className="role-v2-card teacher"
+              whileHover={{ y: -10 }}
+              initial={{ x: 50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <div className="role-v2-icon"><Users size={40} /></div>
+              <h2>Teachers 🧑‍🏫</h2>
+              <p>Deploy curriculum, analyze engagement, and synchronize with your batches in real-time.</p>
+              <div className="role-features">
+                <span>✨ Batch Deployment</span>
+                <span>✨ Analytics Core</span>
+                <span>✨ Live Sync</span>
               </div>
-              <ul className="role-list">
-                <li>Rapid assignment distribution</li>
-                <li>Student engagement analytics</li>
-                <li>Automated submission logging</li>
-                <li>Class batch synchronization</li>
-              </ul>
-            </GlassCard>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ⚡ WHY US */}
-      <section className="why-section">
+      {/* ⚡ INFRASTRUCTURE SECTION */}
+      <section className="infra-section">
         <div className="home-container">
-          <div className="section-header">
-            <h2 className="section-title">The <GradientText>FocusFlow</GradientText> Advantage</h2>
-          </div>
-          <div className="why-grid">
-            <div className="why-item">
-              <Zap size={32} className="text-primary mb-4" />
-              <h4>Unified OS</h4>
-              <p>Everything you need, synchronized in one futuristic interface.</p>
+          <GlassCard className="cta-v2-card">
+            <div className="cta-v2-content">
+              <motion.h2 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+              >
+                Ready to Enter the <br />
+                <GradientText>Next Generation?</GradientText>
+              </motion.h2>
+              <p>Join thousands of users building the future of education on FocusFlow.</p>
+              <GlowButton onClick={() => navigate('/register')} className="cta-btn">
+                Initialize Account 🚀
+              </GlowButton>
             </div>
-            <div className="why-item">
-              <Clock size={32} className="text-secondary mb-4" />
-              <h4>Zero Latency</h4>
-              <p>Lightning-fast interactions designed for peak efficiency.</p>
+            <div className="cta-v2-visual">
+               <Shield size={120} className="cta-shield-icon" />
             </div>
-            <div className="why-item">
-              <Sparkles size={32} className="text-primary mb-4" />
-              <h4>Clean Vision</h4>
-              <p>Minimalist, high-end UI/UX that keeps you focused on what matters.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 🏁 FINAL CTA */}
-      <section className="cta-section">
-        <div className="home-container">
-          <GlassCard className="cta-card">
-            <h2>Ready for the <GradientText>Next Level</GradientText>?</h2>
-            <p>Join the next generation of educators and learners today.</p>
-            <GlowButton onClick={() => navigate('/login')}>
-              🚀 Join FocusFlow <ArrowRight size={20} />
-            </GlowButton>
           </GlassCard>
         </div>
       </section>
 
-      <footer className="home-footer">
-        <p>&copy; {new Date().getFullYear()} FocusFlow • Built for the future of education.</p>
+      <footer className="footer-v2">
+        <div className="home-container">
+          <div className="footer-content">
+             <div className="footer-brand">
+               <h3>⚡ FocusFlow</h3>
+               <p>The Academic Unified Operating System.</p>
+             </div>
+             <div className="footer-links">
+               <span>Documentation</span>
+               <span>Privacy</span>
+               <span>Security</span>
+             </div>
+          </div>
+          <div className="footer-bottom">
+            &copy; {new Date().getFullYear()} FocusFlow Matrix. All rights reserved.
+          </div>
+        </div>
       </footer>
     </div>
   );
