@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Plus, BookOpen, UserPlus, Mail, X } from 'lucide-react';
+import { Users, Plus, BookOpen, UserPlus, Mail, X, Shield, Sparkles } from 'lucide-react';
 import batchService from '../services/batchService';
 import { useAuth } from '../hooks/useAuth';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Badge from '../components/ui/Badge';
+import { GlassCard, GlowButton, GradientText, NeonBadge } from '../components/ui/FuturisticUI';
 import Input from '../components/ui/Input';
 import Spinner from '../components/ui/Spinner';
 
@@ -22,7 +20,6 @@ const Batches = () => {
     const addStudentModalRef = React.useRef();
     
     const [formData, setFormData] = useState({
-
         name: '',
         subject: ''
     });
@@ -43,7 +40,7 @@ const Batches = () => {
             }
         } catch (err) {
             console.error('Fetch error:', err);
-            setError('Failed to fetch batches');
+            setError('Failed to synchronize batch records.');
         } finally {
             setLoading(false);
         }
@@ -65,7 +62,7 @@ const Batches = () => {
                 setFormData({ name: '', subject: '' });
             }
         } catch(err) {
-            setError(err.response?.data?.error || 'Failed to create batch.');
+            setError(err.response?.data?.error || 'Batch initialization failed.');
         } finally {
             setActionLoading(false);
         }
@@ -86,7 +83,7 @@ const Batches = () => {
                 setSelectedBatch(null);
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to add student.');
+            setError(err.response?.data?.error || 'Student enrollment failed.');
         } finally {
             setActionLoading(false);
         }
@@ -95,142 +92,158 @@ const Batches = () => {
     const isStudent = user?.role === 'student';
 
     return (
-        <div className="animate-fade-in page-container">
-            <div>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+        <div className="page-container">
+            <div className="animate-in">
+                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem' }}>
                     <div>
-                        <h1 style={{ fontSize: '2.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0 }}>
-                            <Users size={32} color="#39D1DC" /> {isStudent ? 'My Enrollments' : 'Batch Management'}
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                            Cohort <GradientText>Management</GradientText>
                         </h1>
-                        <p style={{ opacity: 0.7, marginTop: '0.5rem' }}>{isStudent ? 'Your active learning groups.' : 'Create and manage your student cohorts.'}</p>
+                        <p style={{ color: 'var(--text-muted)' }}>{isStudent ? 'Your active learning clusters.' : 'Deploy and manage your educational cohorts.'}</p>
                     </div>
                     {!isStudent && (
-                        <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-                            <Plus size={18} /> Create Batch
-                        </Button>
+                        <GlowButton onClick={() => setShowCreateModal(true)}>
+                            <Plus size={18} /> Initialize Cohort
+                        </GlowButton>
                     )}
                 </header>
 
-                {loading ? <Spinner text="Loading your batches..." /> : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+                {loading ? <Spinner text="Querying cohorts..." /> : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.5rem' }}>
                         {batches.map((batch, index) => (
-                            <Card key={batch._id} className="animate-float" style={{ animationDelay: `${index * 0.1}s`, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <GlassCard key={batch._id} className="animate-in" style={{ animationDelay: `${index * 0.05}s`, padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                     <div>
-                                        <h3 style={{ margin: 0 }}>{batch.name}</h3>
-                                        <div style={{ fontSize: '0.85rem', color: '#39D1DC', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.25rem' }}>
-                                            <BookOpen size={14} /> {batch.subject}
-                                        </div>
+                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, marginBottom: '0.5rem' }}>{batch.name}</h3>
+                                        <NeonBadge color="primary" style={{ fontSize: '0.7rem' }}>
+                                            <BookOpen size={12} style={{ marginRight: '4px' }} /> {batch.subject}
+                                        </NeonBadge>
                                     </div>
                                     {!isStudent && (
-                                        <Button variant="primary" style={{ padding: '0.5rem' }} onClick={() => { setSelectedBatch(batch); setShowAddStudentModal(true); }}>
-                                            <UserPlus size={16} />
-                                        </Button>
+                                        <button 
+                                            style={{ background: 'rgba(57, 209, 220, 0.1)', border: '1px solid rgba(57, 209, 220, 0.2)', color: 'var(--primary)', padding: '8px', borderRadius: '10px', cursor: 'pointer' }} 
+                                            onClick={() => { setSelectedBatch(batch); setShowAddStudentModal(true); }}
+                                            title="Add Student"
+                                        >
+                                            <UserPlus size={18} />
+                                        </button>
                                     )}
                                 </div>
 
-                                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px', flex: 1 }}>
-                                    <div style={{ fontSize: '0.7rem', fontWeight: 'bold', marginBottom: '0.75rem', opacity: 0.5, letterSpacing: '1px' }}>
-                                        {isStudent ? 'INSTRUCTOR' : `STUDENTS (${batch.students?.length || 0})`}
+                                <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)', padding: '1.25rem', borderRadius: '16px', flex: 1 }}>
+                                    <div style={{ fontSize: '0.65rem', fontWeight: 800, marginBottom: '1rem', color: 'var(--text-dim)', letterSpacing: '1.5px' }}>
+                                        {isStudent ? 'INSTRUCTOR PROFILE' : `ENROLLED UNITS (${batch.students?.length || 0})`}
                                     </div>
                                     {isStudent ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                            <div style={{ background: 'var(--accent-gradient)', width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                            <div style={{ background: 'var(--accent-gradient)', width: 40, height: 40, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: 'white' }}>
                                                 {batch.teacher?.name?.charAt(0) || 'T'}
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.9rem', fontWeight: '600' }}>{batch.teacher?.name}</div>
-                                                <div style={{ fontSize: '0.75rem', opacity: 0.5 }}>{batch.teacher?.email}</div>
+                                                <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>{batch.teacher?.name}</div>
+                                                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{batch.teacher?.email}</div>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                             {batch.students?.slice(0, 3).map(s => (
-                                                <div key={s._id} style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                    <Mail size={12} opacity={0.5} /> {s.name}
+                                                <div key={s._id} style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)' }}></div>
+                                                    {s.name}
                                                 </div>
                                             ))}
-                                            {batch.students?.length > 3 && <div style={{ fontSize: '0.75rem', opacity: 0.4 }}>+ {batch.students.length - 3} more students</div>}
-                                            {(!batch.students || batch.students.length === 0) && <div style={{ fontSize: '0.8rem', opacity: 0.3 }}>Empty batch.</div>}
+                                            {batch.students?.length > 3 && <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontStyle: 'italic', marginLeft: '1.2rem' }}>+ {batch.students.length - 3} additional units</div>}
+                                            {(!batch.students || batch.students.length === 0) && <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>No units detected.</div>}
                                         </div>
                                     )}
                                 </div>
 
-                                <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem' }}>
-                                    <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>Created {new Date(batch.createdAt).toLocaleDateString()}</span>
+                                <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{new Date(batch.createdAt).toLocaleDateString()}</span>
                                     {isStudent ? (
-                                        <Badge variant="green">ENROLLED</Badge>
+                                        <NeonBadge color="success">AUTHORIZED</NeonBadge>
                                     ) : (
-                                        <Button variant="secondary" style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem' }} onClick={() => window.location.href=`/batches/${batch._id}`}>Manage</Button>
+                                        <GlowButton variant="secondary" style={{ fontSize: '0.75rem', padding: '6px 16px' }} onClick={() => window.location.hash=`/batches/${batch._id}`}>
+                                            VIEW ARCHIVE
+                                        </GlowButton>
                                     )}
                                 </div>
-                            </Card>
+                            </GlassCard>
                         ))}
                     </div>
                 )}
 
-                {/* Modals */}
+                {/* MODALS */}
                 {showCreateModal && (
-                    <div 
-                        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }} 
-                        onClick={(e) => { if (createModalRef.current && !createModalRef.current.contains(e.target)) setShowCreateModal(false); }}
-                    >
-                        <Card ref={createModalRef} className="animate-fade-in" style={{ width: '100%', maxWidth: '500px' }}>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                                <h2>Create New Batch</h2>
-                                <X style={{ cursor: 'pointer' }} onClick={() => { setShowCreateModal(false); setError(null); }} />
+                    <div className="modal-overlay" onClick={(e) => { if (createModalRef.current && !createModalRef.current.contains(e.target)) setShowCreateModal(false); }}>
+                        <GlassCard ref={createModalRef} className="animate-in" style={{ width: '100%', maxWidth: '500px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', alignItems: 'center' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Cohort Initialization</h2>
+                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowCreateModal(false)}>
+                                    <X size={24} />
+                                </button>
                             </div>
                             
-                            {error && <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>{error}</div>}
+                            {error && <div style={styles.errorAlert}>{error}</div>}
                             
-                            <form onSubmit={handleCreateBatch}>
-                                <div className="form-group" style={{ marginBottom: '1rem' }}>
-                                    <label className="form-label">Batch Name</label>
-                                    <Input name="name" value={formData.name} onChange={handleInputChange} placeholder="e.g. CSE-A (2026)" required />
+                            <form onSubmit={handleCreateBatch} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                <div className="form-group">
+                                    <label className="form-label">Batch Designation</label>
+                                    <Input name="name" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.name} onChange={handleInputChange} placeholder="e.g. ALPHA-SECURE-2026" required />
                                 </div>
-                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                                    <label className="form-label">Subject</label>
-                                    <Input name="subject" value={formData.subject} onChange={handleInputChange} placeholder="e.g. Data Structures" required />
+                                <div className="form-group">
+                                    <label className="form-label">Core Subject</label>
+                                    <Input name="subject" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.subject} onChange={handleInputChange} placeholder="e.g. Quantum Cryptography" required />
                                 </div>
-                                <Button type="submit" variant="primary" style={{ width: '100%' }} disabled={actionLoading}>
-                                    {actionLoading ? 'Creating...' : 'Create Batch'}
-                                </Button>
+                                <GlowButton type="submit" style={{ width: '100%', marginTop: '1rem', justifyContent: 'center' }} disabled={actionLoading}>
+                                    {actionLoading ? 'INITIALIZING...' : 'START DEPLOYMENT'}
+                                </GlowButton>
                             </form>
-                        </Card>
+                        </GlassCard>
                     </div>
                 )}
 
                 {showAddStudentModal && (
-                    <div 
-                        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }} 
-                        onClick={(e) => { if (addStudentModalRef.current && !addStudentModalRef.current.contains(e.target)) setShowAddStudentModal(false); }}
-                    >
-                        <Card ref={addStudentModalRef} className="animate-fade-in" style={{ width: '100%', maxWidth: '400px' }}>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                <h2>Add Student</h2>
-                                <X style={{ cursor: 'pointer' }} onClick={() => { setShowAddStudentModal(false); setError(null); }} />
+                    <div className="modal-overlay" onClick={(e) => { if (addStudentModalRef.current && !addStudentModalRef.current.contains(e.target)) setShowAddStudentModal(false); }}>
+                        <GlassCard ref={addStudentModalRef} className="animate-in" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', alignItems: 'center' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Enroll Unit</h2>
+                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowAddStudentModal(false)}>
+                                    <X size={24} />
+                                </button>
                             </div>
                             
-                            {error && <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>{error}</div>}
+                            {error && <div style={styles.errorAlert}>{error}</div>}
                             
-                            <p style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '1.5rem' }}>Enroll a student into <strong>{selectedBatch?.name}</strong></p>
-                            <form onSubmit={handleAddStudent}>
-                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                                    <label className="form-label">Student Email</label>
-                                    <Input type="email" value={studentEmail} onChange={(e) => setStudentEmail(e.target.value)} placeholder="student@university.edu" required />
+                            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>Targeting Cohort: <GradientText>{selectedBatch?.name}</GradientText></p>
+                            <form onSubmit={handleAddStudent} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                <div className="form-group">
+                                    <label className="form-label">Identity Email</label>
+                                    <Input type="email" style={{ background: 'rgba(255,255,255,0.02)' }} value={studentEmail} onChange={(e) => setStudentEmail(e.target.value)} placeholder="unit@network.io" required />
                                 </div>
-                                <Button type="submit" variant="primary" style={{ width: '100%' }} disabled={actionLoading}>
-                                    {actionLoading ? 'Enrolling...' : 'Add Student'}
-                                </Button>
+                                <GlowButton type="submit" style={{ width: '100%', marginTop: '0.5rem', justifyContent: 'center' }} disabled={actionLoading}>
+                                    {actionLoading ? 'ENROLLING...' : 'AUTHORIZE ENROLLMENT'}
+                                </GlowButton>
                             </form>
-                        </Card>
+                        </GlassCard>
                     </div>
                 )}
             </div>
         </div>
     );
+};
+
+const styles = {
+    errorAlert: {
+        background: 'rgba(239, 68, 68, 0.1)',
+        color: '#ef4444',
+        padding: '1rem',
+        borderRadius: '12px',
+        marginBottom: '1.5rem',
+        border: '1px solid rgba(239, 68, 68, 0.2)',
+        fontSize: '0.85rem',
+        textAlign: 'center'
+    }
 };
 
 export default Batches;

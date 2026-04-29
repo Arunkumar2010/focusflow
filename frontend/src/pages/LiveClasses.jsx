@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Calendar, Clock, Link as LinkIcon, Plus, Info, X } from 'lucide-react';
+import { Video, Calendar, Clock, Plus, X, Sparkles, Activity } from 'lucide-react';
 import classService from '../services/classService';
 import batchService from '../services/batchService';
 import { useAuth } from '../hooks/useAuth';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Badge from '../components/ui/Badge';
+import { GlassCard, GlowButton, GradientText, NeonBadge } from '../components/ui/FuturisticUI';
 import Input from '../components/ui/Input';
 import Spinner from '../components/ui/Spinner';
 
@@ -40,18 +38,18 @@ const LiveClasses = () => {
                 const classTime = new Date(cls.datetime);
                 const oneHourLater = new Date(classTime.getTime() + 60 * 60 * 1000);
                 
-                let status = "Upcoming";
-                let badgeVariant = "yellow";
+                let status = "UPCOMING";
+                let badgeColor = "warning";
                 
                 if (now >= classTime && now <= oneHourLater) {
-                    status = "Ongoing";
-                    badgeVariant = "green";
+                    status = "LIVE NOW";
+                    badgeColor = "success";
                 } else if (now > oneHourLater) {
-                    status = "Completed";
-                    badgeVariant = "red";
+                    status = "ARCHIVED";
+                    badgeColor = "danger";
                 }
                 
-                return { ...cls, currentStatus: status, badgeVariant };
+                return { ...cls, currentStatus: status, badgeColor };
             });
 
             setClasses(processedClasses);
@@ -61,7 +59,7 @@ const LiveClasses = () => {
                 if (batchesRes.success) setBatches(batchesRes.data);
             }
         } catch (err) {
-            setError('Server error, check backend');
+            setError('Connection failure: Unable to synchronize with satellite hub.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -78,7 +76,7 @@ const LiveClasses = () => {
         const { title, batch, date, time, meetingLink } = formData;
         
         if (!title || !batch || !date || !time || !meetingLink) {
-            setError("Please provide all required fields");
+            setError("All telemetry fields are required for deployment.");
             return;
         }
 
@@ -99,119 +97,138 @@ const LiveClasses = () => {
                 setFormData({ title: '', description: '', batch: '', date: '', time: '', meetingLink: '' });
             }
         } catch(err) {
-            console.log(err.response?.data);
-            setError(err.response?.data?.message || 'Failed to schedule class.');
+            setError(err.response?.data?.message || 'Schedule deployment failed.');
         }
     };
 
     return (
-        <div className="animate-fade-in page-container">
-            <div>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+        <div className="page-container">
+            <div className="animate-in">
+                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem' }}>
                     <div>
-                        <h1 style={{ fontSize: '2.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0 }}>
-                            <Video size={32} color="#39D1DC" /> Live Classes
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                            Virtual <GradientText>Nexus</GradientText>
                         </h1>
-                        <p style={{ opacity: 0.7, marginTop: '0.5rem' }}>Manage your virtual lecture schedule.</p>
+                        <p style={{ color: 'var(--text-muted)' }}>Real-time synchronization for global academic sessions.</p>
                     </div>
                     {(user?.role === 'teacher' || user?.role === 'admin') && (
-                        <Button variant="primary" onClick={() => setShowModal(true)}>
-                            <Plus size={18} /> Schedule Class
-                        </Button>
+                        <GlowButton onClick={() => setShowModal(true)}>
+                            <Plus size={18} /> Schedule Session
+                        </GlowButton>
                     )}
                 </header>
 
-                {loading ? <Spinner text="Loading your schedule..." /> : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+                {loading ? <Spinner text="Synchronizing streams..." /> : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.5rem' }}>
                         {classes?.map((cls, index) => (
-                            <Card key={cls._id || index} className="animate-float" style={{ animationDelay: `${index * 0.1}s`, display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                    <div>
-                                        <h3 style={{ margin: 0 }}>{cls.title}</h3>
-                                        <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>{cls.batchId?.name}</div>
+                            <GlassCard key={cls._id || index} className="animate-in" style={{ animationDelay: `${index * 0.05}s`, display: 'flex', flexDirection: 'column', padding: '2rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                                    <div style={{ maxWidth: '70%' }}>
+                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, marginBottom: '0.25rem' }}>{cls.title}</h3>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>{cls.batchId?.name}</div>
                                     </div>
-                                    <Badge variant={cls.badgeVariant}>{cls.currentStatus}</Badge>
+                                    <NeonBadge color={cls.badgeColor}>{cls.currentStatus}</NeonBadge>
                                 </div>
-                                <p style={{ fontSize: '0.9rem', opacity: 0.8, marginBottom: '1.5rem', flex: 1 }}>
-                                    {cls.description || 'No description provided.'}
+                                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', flex: 1, lineHeight: '1.6' }}>
+                                    {cls.description || 'System data: No additional specifications provided.'}
                                 </p>
-                                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                                        <Calendar size={16} /> {new Date(cls.datetime).toLocaleDateString()}
+                                <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-glass)', padding: '1.25rem', borderRadius: '16px', marginBottom: '2rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                        <Calendar size={14} color="var(--primary)" /> {new Date(cls.datetime).toLocaleDateString()}
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem' }}>
-                                        <Clock size={16} /> {new Date(cls.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                        <Clock size={14} color="var(--secondary)" /> {new Date(cls.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </div>
                                 </div>
-                                {cls.currentStatus === 'Ongoing' ? (
+                                {cls.currentStatus === 'LIVE NOW' ? (
                                     <a href={cls.meetingLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                                        <Button variant="primary" style={{ width: '100%' }}>Join Class</Button>
+                                        <GlowButton style={{ width: '100%', justifyContent: 'center' }}>
+                                            <Activity size={18} /> INITIALIZE CONNECTION
+                                        </GlowButton>
                                     </a>
                                 ) : (
-                                    <Button variant="secondary" disabled style={{ width: '100%', opacity: 0.5 }}>
-                                        {cls.currentStatus === 'Upcoming' ? 'Starts Soon' : 'Closed'}
-                                    </Button>
+                                    <GlowButton variant="secondary" disabled style={{ width: '100%', justifyContent: 'center', opacity: 0.4 }}>
+                                        {cls.currentStatus === 'UPCOMING' ? 'SESSION PENDING' : 'CONNECTION TERMINATED'}
+                                    </GlowButton>
                                 )}
-                            </Card>
+                            </GlassCard>
                         ))}
                         {(!classes || classes.length === 0) && (
-                            <Card style={{ gridColumn: '1/-1', textAlign: 'center', padding: '4rem' }}>
-                                <Video size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                                <h3 style={{ opacity: 0.7 }}>No Classes Scheduled</h3>
-                                <p style={{ opacity: 0.5 }}>There are currently no live lectures planned for your batches.</p>
-                            </Card>
+                            <GlassCard style={{ gridColumn: '1/-1', textAlign: 'center', padding: '6rem 2rem', opacity: 0.5 }}>
+                                <Video size={64} style={{ marginBottom: '1.5rem', color: 'var(--text-dim)' }} />
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, marginBottom: '0.5rem' }}>No Active Streams</h3>
+                                <p style={{ color: 'var(--text-dim)' }}>The nexus is currently quiet. No sessions are initialized.</p>
+                            </GlassCard>
                         )}
                     </div>
                 )}
 
+                {/* MODAL REDESIGN */}
                 {showModal && (
-                    <div className="modal-overlay">
-                        <div className="modal animate-fade-in shadow-xl">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
-                                <h2 style={{ margin: 0 }}>Schedule Live Class</h2>
-                                <X style={{ cursor: 'pointer', opacity: 0.6 }} onClick={() => { setShowModal(false); setError(null); }} />
+                    <div className="modal-overlay" onClick={(e) => { if (modalRef.current && !modalRef.current.contains(e.target)) setShowModal(false); }}>
+                        <GlassCard className="animate-in" style={{ width: '100%', maxWidth: '600px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)', position: 'relative' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', alignItems: 'center' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Initialize Session</h2>
+                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowModal(false)}>
+                                    <X size={24} />
+                                </button>
                             </div>
 
-                            {error && <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.75rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '0.9rem' }}>{error}</div>}
+                            {error && <div style={styles.errorAlert}>{error}</div>}
 
-                            <form onSubmit={handleCreateClass}>
+                            <form onSubmit={handleCreateClass} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 <div className="form-group">
-                                    <label className="form-label">Lecture Title</label>
-                                    <Input name="title" placeholder="e.g. Advanced React Architecture" value={formData.title} onChange={handleInputChange} required />
+                                    <label className="form-label">Nexus Designation (Title)</label>
+                                    <Input name="title" style={{ background: 'rgba(255,255,255,0.02)' }} placeholder="e.g. CORE-SYSTEMS ARCHITECTURE" value={formData.title} onChange={handleInputChange} required />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Brief Description</label>
-                                    <Input as="textarea" name="description" placeholder="Topics to be covered..." value={formData.description} onChange={handleInputChange} rows={3} />
+                                    <label className="form-label">Briefing (Description)</label>
+                                    <Input as="textarea" name="description" style={{ background: 'rgba(255,255,255,0.02)' }} placeholder="Deployment instructions..." value={formData.description} onChange={handleInputChange} rows={3} />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Target Batch</label>
-                                    <Input as="select" name="batch" value={formData.batch} onChange={handleInputChange} required>
-                                        <option value="">Select Batch</option>
+                                    <label className="form-label">Target Cohort</label>
+                                    <Input as="select" name="batch" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.batch} onChange={handleInputChange} required>
+                                        <option value="">Select Target...</option>
                                         {batches.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
                                     </Input>
                                 </div>
-                                <div className="form-row">
-                                    <div className="form-group" style={{ flex: 1 }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                    <div className="form-group">
                                         <label className="form-label">Date</label>
-                                        <Input type="date" name="date" value={formData.date} onChange={handleInputChange} required />
+                                        <Input type="date" name="date" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.date} onChange={handleInputChange} required />
                                     </div>
-                                    <div className="form-group" style={{ flex: 1 }}>
-                                        <label className="form-label">Start Time</label>
-                                        <Input type="time" name="time" value={formData.time} onChange={handleInputChange} required />
+                                    <div className="form-group">
+                                        <label className="form-label">Synchronization Time</label>
+                                        <Input type="time" name="time" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.time} onChange={handleInputChange} required />
                                     </div>
                                 </div>
-                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                                    <label className="form-label">Virtual Meeting Link</label>
-                                    <Input type="url" name="meetingLink" placeholder="Zoom, Meet, or Teams URL" value={formData.meetingLink} onChange={handleInputChange} required />
+                                <div className="form-group">
+                                    <label className="form-label">Virtual Link (Zoom/Meet/Nexus)</label>
+                                    <Input type="url" name="meetingLink" style={{ background: 'rgba(255,255,255,0.02)' }} placeholder="https://..." value={formData.meetingLink} onChange={handleInputChange} required />
                                 </div>
-                                <Button type="submit" variant="primary" style={{ width: '100%' }}>Schedule Now</Button>
+                                <GlowButton type="submit" style={{ width: '100%', marginTop: '1rem', justifyContent: 'center' }}>
+                                    DEPLOY TO NEXUS
+                                </GlowButton>
                             </form>
-                        </div>
+                        </GlassCard>
                     </div>
                 )}
             </div>
         </div>
     );
+};
+
+const styles = {
+    errorAlert: {
+        background: 'rgba(239, 68, 68, 0.1)',
+        color: '#ef4444',
+        padding: '1rem',
+        borderRadius: '12px',
+        marginBottom: '1.5rem',
+        border: '1px solid rgba(239, 68, 68, 0.2)',
+        fontSize: '0.85rem',
+        textAlign: 'center'
+    }
 };
 
 export default LiveClasses;
