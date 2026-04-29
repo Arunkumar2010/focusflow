@@ -1,4 +1,5 @@
 {
+  "//": "Final fix for blank screen issue",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]
