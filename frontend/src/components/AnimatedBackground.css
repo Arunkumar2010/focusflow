@@ -1,4 +1,4 @@
-.futuristic-bg-container {
+.futuristic-bg-canvas {
     position: fixed;
     top: 0;
     left: 0;
@@ -6,24 +6,26 @@
     height: 100vh;
     z-index: -1;
     overflow: hidden;
-    background-color: #050508;
+    background-color: #020617; /* Matches var(--bg-main) */
+    pointer-events: none;
 }
 
-.bg-content-wrapper {
+.app-content-root {
     position: relative;
-    z-index: 10;
+    z-index: 1;
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    min-height: 100vh;
+    background: transparent;
 }
 
 /* Base Animated Gradient */
 .animated-gradient-base {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #050508 0%, #0a0a1a 50%, #050508 100%);
+    background: linear-gradient(135deg, #020617 0%, #0f172a 25%, #020617 50%, #1e1b4b 75%, #020617 100%);
     background-size: 400% 400%;
-    animation: gradientMove 20s ease infinite;
+    animation: gradientMove 15s ease infinite; /* Slightly faster */
+    opacity: 0.8;
 }
 
 @keyframes gradientMove {
@@ -35,35 +37,36 @@
 /* Mouse Follow Glow */
 .mouse-follow-glow {
     position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(57, 209, 220, 0.1) 0%, transparent 70%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(57, 209, 220, 0.25) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
-    z-index: 1;
-    filter: blur(40px);
-    transition: transform 0.1s ease-out;
+    z-index: 5;
+    filter: blur(50px);
+    transform: translate(-50%, -50%);
+    transition: opacity 0.5s ease;
 }
 
 /* Floating Blur Blobs */
 .blur-blob {
     position: absolute;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(237, 128, 253, 0.05) 0%, transparent 70%);
-    filter: blur(60px);
-    z-index: 0;
+    background: radial-gradient(circle, rgba(237, 128, 253, 0.1) 0%, transparent 70%);
+    filter: blur(80px);
+    z-index: 1;
     animation: floatBlob linear infinite;
 }
 
 .blur-blob:nth-child(even) {
-    background: radial-gradient(circle, rgba(57, 209, 220, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(57, 209, 220, 0.1) 0%, transparent 70%);
 }
 
 @keyframes floatBlob {
-    0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(100px, 100px) scale(1.1); }
-    66% { transform: translate(-50px, 150px) scale(0.9); }
-    100% { transform: translate(0, 0) scale(1); }
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    33% { transform: translate(15vw, 15vh) rotate(120deg) scale(1.2); }
+    66% { transform: translate(-10vw, 25vh) rotate(240deg) scale(0.8); }
+    100% { transform: translate(0, 0) rotate(360deg) scale(1); }
 }
 
 /* Particles */
@@ -71,23 +74,23 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 2;
+    z-index: 10;
 }
 
 .particle {
     position: absolute;
-    background: white;
+    background: #fff;
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 1);
     opacity: 0;
     animation: particleFloatFade linear infinite;
 }
 
 @keyframes particleFloatFade {
     0% { transform: translate(0, 0); opacity: 0; }
-    20% { opacity: 0.5; }
-    80% { opacity: 0.5; }
-    100% { transform: translate(50px, -100px); opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.8; }
+    100% { transform: translate(100px, -200px); opacity: 0; }
 }
 
 /* Grid Overlay */
@@ -95,9 +98,10 @@
     position: absolute;
     inset: 0;
     background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: 3;
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 2;
     pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, black, transparent 90%);
 }

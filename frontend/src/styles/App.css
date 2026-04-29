@@ -8,38 +8,11 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-body.dark {
-  background: var(--bg-main);
-  color: var(--text-main);
+body {
+  background: #020617;
+  color: #f8fafc;
   overflow-x: hidden;
   min-height: 100vh;
-}
-
-/* 🌌 IMMERSIVE FUTURISTIC BACKGROUND */
-body.dark::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: 
-    radial-gradient(circle at 15% 20%, rgba(57, 209, 220, 0.15), transparent 35%),
-    radial-gradient(circle at 85% 30%, rgba(124, 58, 237, 0.15), transparent 35%),
-    radial-gradient(circle at 50% 80%, rgba(237, 128, 253, 0.1), transparent 40%),
-    linear-gradient(to bottom, #020617, #0f172a);
-  filter: blur(80px);
-}
-
-/* ✨ MESH GRIDS */
-body.dark::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
-  pointer-events: none;
 }
 
 /* 🧊 GLASSMORPHISM BASE */
