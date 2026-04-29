@@ -289,7 +289,7 @@ const styles = {
         background: 'rgba(239, 68, 68, 0.1)',
         color: '#f87171',
         padding: '1rem',
-        border-radius: '12px',
+        borderRadius: '12px',
         border: '1px solid rgba(239, 68, 68, 0.2)',
         marginBottom: '2rem',
         fontSize: '0.85rem',
