@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Layers, Users, Video, FileText, Calendar, Clock, ArrowRight } from 'lucide-react';
+import { Layers, Users, Video, FileText, Calendar, Clock, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import batchService from '../services/batchService';
 import classService from '../services/classService';
 import assignmentService from '../services/assignmentService';
 import { useAuth } from '../hooks/useAuth';
-import Card from '../components/ui/Card';
+import { GlassCard, GradientText, NeonBadge } from '../components/ui/FuturisticUI';
 import Spinner from '../components/ui/Spinner';
 
 const Dashboard = () => {
@@ -20,23 +20,20 @@ const Dashboard = () => {
             try {
                 setLoading(true);
                 
-                // Fetch analytic counts for teachers
                 if (user?.role === 'teacher' || user?.role === 'admin') {
                     const analyticsRes = await batchService.getTeacherAnalytics();
                     if (analyticsRes.success) setAnalytics(analyticsRes.data);
                 }
 
-                // Fetch upcoming classes
                 const classesRes = await classService.getClasses();
                 if (classesRes.success) {
                     const sorted = (classesRes.data || [])
-                        .filter(c => new Date(c.datetime) > new Date(new Date().getTime() - 2 * 60 * 60 * 1000)) // Include ongoing
+                        .filter(c => new Date(c.datetime) > new Date(new Date().getTime() - 2 * 60 * 60 * 1000))
                         .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
                         .slice(0, 3);
                     setUpcomingClasses(sorted);
                 }
 
-                // Fetch recent assignments
                 const assignmentsRes = await assignmentService.getAssignments();
                 if (assignmentsRes.success) {
                     setRecentAssignments((assignmentsRes.data || []).slice(0, 3));
@@ -55,101 +52,110 @@ const Dashboard = () => {
     const isTeacher = user?.role === 'teacher' || user?.role === 'admin';
 
     return (
-        <div className="animate-fade-in page-container">
-            <div>
+        <div className="page-container">
+            <div className="animate-in">
                 <header style={{ marginBottom: '3rem' }}>
-                    <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Welcome, {user?.name || 'User'}</h1>
-                    <p style={{ opacity: 0.6, fontSize: '1.1rem' }}>{isTeacher ? "Here's an overview of your teaching impact today." : "Keep track of your classes and assignments."}</p>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                        Welcome back, <GradientText>{user?.name || 'User'}</GradientText>
+                    </h1>
+                    <p style={{ opacity: 0.6, fontSize: '1.1rem' }}>
+                        {isTeacher ? "Your teaching ecosystem is synchronized." : "Track your academic performance and goals."}
+                    </p>
                 </header>
 
-                {/* Teacher Analytics Grid */}
-                {loading ? <Spinner text="Syncing Dashboard..." /> : isTeacher && analytics && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-                        <Card className="animate-float" style={{ borderLeft: '4px solid #39D1DC' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.6, marginBottom: '1rem' }}>
-                                <Layers size={20} /> Total Batches
+                {/* 🚀 ANALYTICS TILES */}
+                {loading ? <Spinner text="Syncing Hub..." /> : isTeacher && analytics && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                        <GlassCard className="animate-in" style={{ animationDelay: '0.1s', borderLeft: '4px solid var(--primary)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                                <Layers size={18} /> ACTIVE BATCHES
                             </div>
-                            <h2 style={{ fontSize: '2.5rem', margin: 0 }}>{analytics.totalBatches}</h2>
-                        </Card>
-                        <Card className="animate-float" style={{ borderLeft: '4px solid #ED80FD', animationDelay: '0.1s' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.6, marginBottom: '1rem' }}>
-                                <Users size={20} /> Total Students
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }}>{analytics.totalBatches}</h2>
+                        </GlassCard>
+                        <GlassCard className="animate-in" style={{ animationDelay: '0.2s', borderLeft: '4px solid var(--secondary)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                                <Users size={18} /> TOTAL STUDENTS
                             </div>
-                            <h2 style={{ fontSize: '2.5rem', margin: 0 }}>{analytics.totalStudents}</h2>
-                        </Card>
-                        <Card className="animate-float" style={{ borderLeft: '4px solid #22c55e', animationDelay: '0.2s' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.6, marginBottom: '1rem' }}>
-                                <Video size={20} /> Upcoming Classes
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }}>{analytics.totalStudents}</h2>
+                        </GlassCard>
+                        <GlassCard className="animate-in" style={{ animationDelay: '0.3s', borderLeft: '4px solid #22c55e' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                                <Video size={18} /> NEXT SESSIONS
                             </div>
-                            <h2 style={{ fontSize: '2.5rem', margin: 0 }}>{analytics.upcomingClasses}</h2>
-                        </Card>
-                        <Card className="animate-float" style={{ borderLeft: '4px solid #eab308', animationDelay: '0.3s' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.6, marginBottom: '1rem' }}>
-                                <FileText size={20} /> Active Assignments
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }}>{analytics.upcomingClasses}</h2>
+                        </GlassCard>
+                        <GlassCard className="animate-in" style={{ animationDelay: '0.4s', borderLeft: '4px solid #eab308' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                                <FileText size={18} /> ASSIGNMENTS
                             </div>
-                            <h2 style={{ fontSize: '2.5rem', margin: 0 }}>{analytics.totalAssignments}</h2>
-                        </Card>
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }}>{analytics.totalAssignments}</h2>
+                        </GlassCard>
                     </div>
                 )}
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-                    {/* Classes Section */}
-                    <Card>
+                    {/* 🧊 CLASSES WIDGET */}
+                    <GlassCard>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0 }}>
-                                <Video size={24} color="#39D1DC" /> {isTeacher ? 'Upcoming Sessions' : 'Next Classes'}
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>
+                                <Video size={20} color="var(--primary)" /> {isTeacher ? 'Upcoming Sessions' : 'Next Classes'}
                             </h2>
-                            <Link to="/classes" style={{ color: 'var(--accent-color)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                                View all <ArrowRight size={14} />
+                            <Link to="/classes" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                FULL SCHEDULE <ArrowRight size={14} />
                             </Link>
                         </div>
                         {upcomingClasses.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {upcomingClasses.map(cls => (
-                                    <div key={cls._id} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>{cls.title}</div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', opacity: 0.6 }}>
+                                    <div key={cls._id} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-glass)' }}>
+                                        <div style={{ fontWeight: '700', marginBottom: '0.75rem', fontSize: '1rem' }}>{cls.title}</div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                <Calendar size={12} /> {new Date(cls.datetime).toLocaleDateString()}
+                                                <Calendar size={14} /> {new Date(cls.datetime).toLocaleDateString()}
                                             </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                <Clock size={12} /> {new Date(cls.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--primary)' }}>
+                                                <Clock size={14} /> {new Date(cls.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p style={{ opacity: 0.4, textAlign: 'center', padding: '2rem' }}>No sessions scheduled soon.</p>
+                            <div style={{ textAlign: 'center', padding: '3rem 1rem', opacity: 0.5 }}>
+                                <Sparkles size={32} style={{ marginBottom: '1rem' }} />
+                                <p>No sessions scheduled.</p>
+                            </div>
                         )}
-                    </Card>
+                    </GlassCard>
 
-                    {/* Assignments Section */}
-                    <Card>
+                    {/* 🧊 ASSIGNMENTS WIDGET */}
+                    <GlassCard>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0 }}>
-                                <FileText size={24} color="#ED80FD" /> Academic Tasks
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>
+                                <FileText size={20} color="var(--secondary)" /> Academic Tasks
                             </h2>
-                            <Link to="/assignments" style={{ color: 'var(--accent-color)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                                See details <ArrowRight size={14} />
+                            <Link to="/assignments" style={{ color: 'var(--secondary)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                VIEW ALL <ArrowRight size={14} />
                             </Link>
                         </div>
                         {recentAssignments.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {recentAssignments.map(assign => (
-                                    <div key={assign._id} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <div style={{ fontWeight: '600', marginBottom: '0.2rem' }}>{assign.title}</div>
-                                        <div style={{ fontSize: '0.75rem', opacity: 0.4, marginBottom: '0.5rem' }}>For {assign.batchId?.name}</div>
-                                        <div style={{ fontSize: '0.8rem', color: '#eab308' }}>
-                                            Due {new Date(assign.dueDate).toLocaleDateString()}
-                                        </div>
+                                    <div key={assign._id} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-glass)' }}>
+                                        <div style={{ fontWeight: '700', marginBottom: '0.25rem', fontSize: '1rem' }}>{assign.title}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.75rem' }}>For {assign.batchId?.name}</div>
+                                        <NeonBadge color="warning" style={{ fontSize: '0.7rem' }}>
+                                            DUE: {new Date(assign.dueDate).toLocaleDateString()}
+                                        </NeonBadge>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p style={{ opacity: 0.4, textAlign: 'center', padding: '2rem' }}>All assignments completed.</p>
+                            <div style={{ textAlign: 'center', padding: '3rem 1rem', opacity: 0.5 }}>
+                                <p>All clear for now.</p>
+                            </div>
                         )}
-                    </Card>
+                    </GlassCard>
                 </div>
             </div>
         </div>

@@ -1,56 +1,26 @@
+/* Futuristic Sidebar */
+
 .sidebar {
-    width: 260px;
-    background-color: var(--bg-secondary);
-    border-right: 1px solid var(--border-color);
-    padding: 2rem 1.5rem;
-    height: calc(100vh - 80px); /* Assuming 80px header */
-    position: sticky;
-    top: 80px; /* Offset for sticky header */
-    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-    z-index: 50;
-    transition: width 0.3s ease;
+    transition: var(--transition-smooth);
+    overflow-y: auto;
 }
 
-.menu-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: var(--text-main) !important;
+    transform: translateX(5px);
 }
 
-/* Base link style overriding App.css definition for .sidebar-link if any */
-.sidebar .sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.875rem 1.25rem;
-    border-radius: var(--radius-md);
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: all var(--transition-smooth);
-    font-weight: 500;
-    font-size: 0.95rem;
+.sidebar-link.active:hover {
+    background: rgba(57, 209, 220, 0.15) !important;
 }
 
-/* Hover effect */
-.sidebar .sidebar-link:hover {
-    color: var(--text-primary);
-    background-color: var(--glass-border);
+/* Scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
 }
 
-/* Active Highlight */
-.sidebar .sidebar-link.active {
-    background: var(--accent-gradient);
-    color: #ffffff;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-}
-
-.sidebar-icon-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform var(--transition-bouncy);
-}
-
-.sidebar .sidebar-link:hover .sidebar-icon-wrapper {
-    transform: scale(1.15) rotate(-5deg);
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-glass);
+    border-radius: 10px;
 }

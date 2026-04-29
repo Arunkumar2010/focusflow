@@ -7,6 +7,7 @@ import { AchievementProvider } from './context/AchievementContext';
 import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -47,7 +48,7 @@ const AppRoutes = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Home />} />
             
             <Route path="/dashboard" element={
                 <PrivateRoute>

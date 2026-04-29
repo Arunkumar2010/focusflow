@@ -1,6 +1,7 @@
 import React from 'react';
-import { Trash2, Edit, CheckCircle, Circle, Clock, Tag, Book, PenTool, Hash, Folder, AlertCircle } from 'lucide-react';
+import { Trash2, Edit, CheckCircle, Circle, Clock, Hash, Book, PenTool, Folder, AlertCircle } from 'lucide-react';
 import { formatDeadline, isApproaching, isOverdue } from '../utils/productivityHelper';
+import { GlassCard, NeonBadge } from './ui/FuturisticUI';
 import '../styles/tasks.css';
 
 const TaskItem = ({ task, onUpdate, onDelete, onEdit }) => {
@@ -8,18 +9,18 @@ const TaskItem = ({ task, onUpdate, onDelete, onEdit }) => {
 
     const getPriorityColor = (priority) => {
         switch(priority) {
-            case 'High': return 'var(--danger-color)';
-            case 'Medium': return 'var(--warning-color)';
-            default: return 'var(--success-color)';
+            case 'High': return 'danger';
+            case 'Medium': return 'warning';
+            default: return 'success';
         }
     };
 
     const getCategoryIcon = (category) => {
         switch(category) {
-            case 'Study': return <Book size={14} style={{marginRight:'4px'}}/>;
-            case 'Assignment': return <PenTool size={14} style={{marginRight:'4px'}}/>;
-            case 'Exam': return <AlertCircle size={14} style={{marginRight:'4px'}}/>;
-            default: return <Folder size={14} style={{marginRight:'4px'}}/>;
+            case 'Study': return <Book size={14} />;
+            case 'Assignment': return <PenTool size={14} />;
+            case 'Exam': return <AlertCircle size={14} />;
+            default: return <Folder size={14} />;
         }
     };
 
@@ -32,70 +33,104 @@ const TaskItem = ({ task, onUpdate, onDelete, onEdit }) => {
     const priorityColor = getPriorityColor(task.priority);
 
     return (
-        <div style={{
-            borderLeft: `4px solid ${priorityColor}`,
-            boxShadow: `0 4px 15px ${priorityColor}22`
-        }} className={`task-card animate-fade-in hover-glow ${isCompleted ? 'completed' : ''}`}>
-            
-            <div className="task-left-section">
-                <button onClick={handleToggleComplete} className="task-icon-btn">
-                    {isCompleted ? <CheckCircle color="var(--success-color)" size={24}/> : <Circle color="var(--text-secondary)" size={24}/>}
+        <GlassCard 
+            className={`task-card ${isCompleted ? 'opacity-60' : ''}`}
+            style={{ 
+                marginBottom: '1rem', 
+                borderLeft: `4px solid ${priorityColor === 'danger' ? '#ef4444' : priorityColor === 'warning' ? '#eab308' : '#22c55e'}`,
+                padding: '1.25rem'
+            }}
+        >
+            <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
+                <button 
+                    onClick={handleToggleComplete} 
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: '2px' }}
+                >
+                    {isCompleted ? <CheckCircle color="#22c55e" size={24}/> : <Circle color="var(--text-dim)" size={24}/>}
                 </button>
-                <div className="task-content">
-                    <div className="task-title-row">
-                        <h3 className="task-title">
-                            {task.title}
-                        </h3>
-                        {task.category && (
-                            <span className="task-category-badge">
-                                {getCategoryIcon(task.category)}
-                                {task.category}
-                            </span>
-                        )}
+                
+                <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <h3 style={{ 
+                                margin: 0, 
+                                fontSize: '1.1rem', 
+                                fontWeight: 700,
+                                textDecoration: isCompleted ? 'line-through' : 'none',
+                                color: isCompleted ? 'var(--text-dim)' : 'var(--text-main)'
+                            }}>
+                                {task.title}
+                            </h3>
+                            {task.category && (
+                                <NeonBadge color="primary" style={{ fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                    {getCategoryIcon(task.category)}
+                                    {task.category}
+                                </NeonBadge>
+                            )}
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button onClick={() => onEdit(task)} style={styles.actionBtn} title="Edit Task">
+                                <Edit size={16} />
+                            </button>
+                            <button onClick={() => onDelete(task._id)} style={{ ...styles.actionBtn, color: '#ef4444' }} title="Delete Task">
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
                     </div>
                     
-                    <p className="task-description">{task.description}</p>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: '1.5' }}>
+                        {task.description}
+                    </p>
                     
-                    {task.tags && task.tags.length > 0 && (
-                        <div className="task-tags-container">
-                            {task.tags.map((tag, idx) => (
-                                <span key={idx} className="task-tag-badge">
-                                    <Hash size={10} /> {tag}
-                                </span>
-                            ))}
-                        </div>
-                    )}
-                    
-                    <div className="task-meta">
-                        <span className="task-badge">{task.priority} Priority</span>
-                        
-                        <span className="task-deadline" style={{
-                            color: overdue && !isCompleted ? 'var(--danger-color)' : approaching && !isCompleted ? 'var(--warning-color)' : 'var(--text-secondary)'
-                        }}>
-                            <Clock size={14} style={{ marginRight: '4px' }}/>
-                            {formatDeadline(task.deadline)}
-                            {overdue && !isCompleted && ' (Overdue)'}
-                        </span>
-
-                        {task.estimatedTime > 0 && (
-                            <span className="task-est-time">
-                                ~{task.estimatedTime}m
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                            <NeonBadge color={priorityColor} style={{ fontSize: '0.65rem' }}>
+                                {task.priority}
+                            </NeonBadge>
+                            
+                            <span style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '0.4rem', 
+                                fontSize: '0.8rem',
+                                fontWeight: 600,
+                                color: overdue && !isCompleted ? '#ef4444' : approaching && !isCompleted ? '#eab308' : 'var(--text-dim)'
+                            }}>
+                                <Clock size={14} />
+                                {formatDeadline(task.deadline)}
+                                {overdue && !isCompleted && ' (EXPIRED)'}
                             </span>
+                        </div>
+                        
+                        {task.tags && task.tags.length > 0 && (
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                {task.tags.map((tag, idx) => (
+                                    <span key={idx} style={{ fontSize: '0.75rem', color: 'var(--primary)', opacity: 0.6 }}>
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
-
-            <div className="task-actions">
-                <button onClick={() => onEdit(task)} className="task-action-btn" style={{color: 'var(--accent-color)'}} title="Edit Task">
-                    <Edit size={18} />
-                </button>
-                <button onClick={() => onDelete(task._id)} className="task-action-btn" style={{color: 'var(--danger-color)'}} title="Delete Task">
-                    <Trash2 size={18} />
-                </button>
-            </div>
-        </div>
+        </GlassCard>
     );
+};
+
+const styles = {
+    actionBtn: {
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid var(--border-glass)',
+        color: 'var(--text-dim)',
+        padding: '6px',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        transition: 'var(--transition-fast)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 };
 
 export default TaskItem;

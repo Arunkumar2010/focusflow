@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { GlassCard, GlowButton, GradientText } from '../components/ui/FuturisticUI';
+import { User, Mail, Lock, Shield, UserPlus } from 'lucide-react';
 
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'student' });
@@ -15,77 +17,93 @@ const Register = () => {
         setError('');
         try {
             await register(formData);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.error || 'Registration failed. Please try again.');
+            setError(err.response?.data?.error || 'Registration sequence failed.');
         }
     };
 
     return (
         <div style={styles.container}>
-            <div style={styles.card} className="glass-card animate-fade-in">
-                <h2 style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--accent-color)' }}>Create Account</h2>
+            <GlassCard className="animate-in" style={styles.card}>
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                        Join <GradientText>FocusFlow</GradientText>
+                    </h2>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Initialize New Identity</p>
+                </div>
                 
-                {error && <div style={styles.error}>{error}</div>}
+                {error && (
+                    <div style={styles.error} className="animate-in">
+                        {error}
+                    </div>
+                )}
                 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="form-label">Full Name</label>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ position: 'relative' }}>
+                        <User size={18} style={styles.icon} />
                         <input 
                             type="text" 
                             name="name"
+                            placeholder="Full Name"
                             className="form-control" 
+                            style={styles.input}
                             value={formData.name} 
                             onChange={handleChange} 
                             required 
                         />
                     </div>
-                    <div className="form-group">
-                        <label className="form-label">Email</label>
+                    <div style={{ position: 'relative' }}>
+                        <Mail size={18} style={styles.icon} />
                         <input 
                             type="email" 
                             name="email"
+                            placeholder="Email Address"
                             className="form-control" 
+                            style={styles.input}
                             value={formData.email} 
                             onChange={handleChange} 
                             required 
                         />
                     </div>
-                    <div className="form-group">
-                        <label className="form-label">Password (Min 6 characters)</label>
+                    <div style={{ position: 'relative' }}>
+                        <Lock size={18} style={styles.icon} />
                         <input 
                             type="password" 
                             name="password"
+                            placeholder="Secure Password"
                             className="form-control" 
+                            style={styles.input}
                             value={formData.password} 
                             onChange={handleChange} 
                             required 
                             minLength={6}
                         />
                     </div>
-                    <div className="form-group">
-                        <label className="form-label">Select Role</label>
+                    <div style={{ position: 'relative' }}>
+                        <Shield size={18} style={styles.icon} />
                         <select 
                             name="role" 
                             className="form-control" 
+                            style={{ ...styles.input, appearance: 'none' }}
                             value={formData.role} 
                             onChange={handleChange}
-                            style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
                         >
-                            <option value="student">Student</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="admin">Admin</option>
+                            <option value="student">Student Account</option>
+                            <option value="teacher">Educator Account</option>
+                            <option value="admin">Administrator</option>
                         </select>
                     </div>
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
-                        Register
-                    </button>
+                    <GlowButton type="submit" style={{ width: '100%', marginTop: '0.5rem', justifyContent: 'center' }}>
+                        <UserPlus size={18} />
+                        Initialize Account
+                    </GlowButton>
                 </form>
 
-                <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-secondary)' }}>
-                    Already have an account? <Link to="/login">Login here</Link>
+                <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                    Identity exists? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>Return to Login</Link>
                 </p>
-            </div>
+            </GlassCard>
         </div>
     );
 };
@@ -96,20 +114,36 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        backgroundColor: 'var(--bg-color)'
     },
     card: {
         width: '100%',
-        maxWidth: '400px',
-        padding: '2.5rem'
+        maxWidth: '460px',
+        padding: '3rem 2.5rem',
+        border: '1px solid var(--border-glass-bright)'
+    },
+    icon: {
+        position: 'absolute',
+        left: '1rem',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        color: 'var(--text-dim)',
+        pointerEvents: 'none',
+        zIndex: 2
+    },
+    input: {
+        paddingLeft: '3rem',
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid var(--border-glass)',
+        fontSize: '0.95rem'
     },
     error: {
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-        color: 'var(--danger-color)',
-        padding: '0.75rem',
-        borderRadius: 'var(--radius-md)',
+        background: 'rgba(239, 68, 68, 0.1)',
+        color: '#ef4444',
+        padding: '1rem',
+        borderRadius: '12px',
         marginBottom: '1.5rem',
-        border: '1px solid var(--danger-color)',
+        border: '1px solid rgba(239, 68, 68, 0.2)',
+        fontSize: '0.85rem',
         textAlign: 'center'
     }
 };

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Plus, Calendar, BookOpen, X } from 'lucide-react';
+import { FileText, Plus, Calendar, BookOpen, X, Sparkles } from 'lucide-react';
 import assignmentService from '../services/assignmentService';
 import batchService from '../services/batchService';
 import { useAuth } from '../hooks/useAuth';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Badge from '../components/ui/Badge';
+import { GlassCard, GlowButton, GradientText, NeonBadge } from '../components/ui/FuturisticUI';
 import Input from '../components/ui/Input';
 import Spinner from '../components/ui/Spinner';
 
@@ -17,7 +15,6 @@ const Assignments = () => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     
-    // Selection and Submission State
     const [selectedId, setSelectedId] = useState(null);
     const [submissionContent, setSubmissionContent] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -25,7 +22,6 @@ const Assignments = () => {
     const modalRef = React.useRef();
 
     const [formData, setFormData] = useState({
-
         title: '',
         description: '',
         batchId: '',
@@ -88,7 +84,6 @@ const Assignments = () => {
             setSubmitting(true);
             const res = await assignmentService.submitAssignment(selectedId, submissionContent);
             if (res.success) {
-                // Refresh data to show submitted status
                 const updatedRes = await assignmentService.getAssignments();
                 if (updatedRes.success) setAssignments(updatedRes.data);
                 setSubmissionContent('');
@@ -103,212 +98,180 @@ const Assignments = () => {
     const isTeacher = user?.role === 'teacher' || user?.role === 'admin';
     const selectedAssignment = assignments.find(a => a._id === selectedId);
     
-    // Check if current user has submitted the selected assignment
     const mySubmission = selectedAssignment?.submissions?.find(
         s => s.studentId === user?._id || s.studentId?._id === user?._id
     );
-
 
     const getStatus = (assign) => {
         const submission = assign.submissions?.find(
             s => s.studentId === user?._id || s.studentId?._id === user?._id
         );
-        if (submission) return { label: 'Submitted', type: 'submitted' };
+        if (submission) return { label: 'COMPLETED', type: 'success' };
         
         const isPastDue = new Date(assign.dueDate) < new Date();
-        if (isPastDue) return { label: 'Missing', type: 'missing' };
+        if (isPastDue) return { label: 'MISSING', type: 'danger' };
         
-        return { label: 'Work Assigned', type: 'pending' };
+        return { label: 'PENDING', type: 'warning' };
     };
 
-    return (
-        <div className="animate-fade-in page-container">
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div>
-                    <h1 style={{ fontSize: '2.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0 }}>
-                        <BookOpen size={32} color="#ED80FD" /> Assignments
-                    </h1>
-                    <p style={{ opacity: 0.7, marginTop: '0.4rem' }}>
-                        {isTeacher ? 'Create and review batch coursework.' : 'Manage your upcoming and missing academic work.'}
-                    </p>
-                </div>
-                {isTeacher && (
-                    <Button variant="primary" onClick={() => setShowModal(true)}>
-                        <Plus size={18} /> New Assignment
-                    </Button>
-                )}
-            </header>
+    if (loading) return <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Spinner text="Loading Vault..." /></div>;
 
-            {loading ? <Spinner text="Fetching assignments..." /> : (
-                <div className="assignments-page">
-                    {/* Left Panel: Feed */}
-                    <div className="left-panel">
+    return (
+        <div className="page-container">
+            <div className="animate-in">
+                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                            Knowledge <GradientText>Vault</GradientText>
+                        </h1>
+                        <p style={{ color: 'var(--text-muted)' }}>
+                            {isTeacher ? 'Manage batch coursework and research.' : 'Centralized repository for your academic assignments.'}
+                        </p>
+                    </div>
+                    {isTeacher && (
+                        <GlowButton onClick={() => setShowModal(true)}>
+                            <Plus size={18} /> New Assignment
+                        </GlowButton>
+                    )}
+                </header>
+
+                <div className="assignments-page" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '2rem' }}>
+                    {/* Left: Feed */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                         {assignments.length > 0 ? assignments.map((assign, index) => {
                             const status = getStatus(assign);
                             return (
-                                <div 
+                                <GlassCard 
                                     key={assign._id} 
-                                    className={`assignment-card card ${selectedId === assign._id ? 'active' : ''}`}
+                                    className={`animate-in ${selectedId === assign._id ? 'border-primary' : ''}`}
                                     onClick={() => setSelectedId(assign._id)}
-                                    style={{ animationDelay: `${index * 0.1}s` }}
+                                    style={{ cursor: 'pointer', padding: '1.5rem', borderLeft: selectedId === assign._id ? '4px solid var(--primary)' : '1px solid var(--border-glass)', animationDelay: `${index * 0.05}s` }}
                                 >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', gap: '1rem', overflow: 'hidden' }}>
-                                        <h3 style={{ 
-                                            margin: 0, 
-                                            fontSize: '1.1rem', 
-                                            minWidth: 0, 
-                                            whiteSpace: 'nowrap', 
-                                            overflow: 'hidden', 
-                                            textOverflow: 'ellipsis' 
-                                        }}>{assign.title}</h3>
-
-                                        <span className={`status-badge status-${status.type}`} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', borderRadius: '20px', flexShrink: 0 }}>
-                                            {status.label}
-                                        </span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                                        <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>{assign.title}</h3>
+                                        <NeonBadge color={status.type} style={{ fontSize: '0.65rem' }}>{status.label}</NeonBadge>
                                     </div>
-
-                                    <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', opacity: 0.6 }}>
+                                    <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem', color: 'var(--text-dim)' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                            <Calendar size={14} /> Due: {new Date(assign.dueDate).toLocaleDateString()}
+                                            <Calendar size={14} /> {new Date(assign.dueDate).toLocaleDateString()}
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                            <Badge variant="gray" style={{ fontSize: '0.7rem' }}>{assign.batchId?.name}</Badge>
-                                        </div>
+                                        <div style={{ fontWeight: 600, color: 'var(--text-muted)' }}>{assign.batchId?.name}</div>
                                     </div>
-                                </div>
+                                </GlassCard>
                             );
                         }) : (
-                            <Card style={{ textAlign: 'center', padding: '4rem' }}>
-                                <FileText size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                                <p style={{ opacity: 0.5 }}>No assignments available yet.</p>
-                            </Card>
+                            <GlassCard style={{ textAlign: 'center', padding: '4rem 2rem', opacity: 0.5 }}>
+                                <FileText size={48} style={{ marginBottom: '1rem' }} />
+                                <p>No records found.</p>
+                            </GlassCard>
                         )}
                     </div>
 
-                    {/* Right Panel: Selected Detail & Submission */}
+                    {/* Right: Details */}
                     <div className="right-panel">
                         {selectedAssignment ? (
-                            <Card style={{ padding: '2rem', minHeight: '400px' }}>
-                                <div style={{ marginBottom: '2rem' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                        <h2 style={{ margin: 0 }}>{selectedAssignment?.title || 'Your Work'}</h2>
-                                        <StatusBadge status={getStatus(selectedAssignment)} />
+                            <GlassCard style={{ padding: '2.5rem', minHeight: '500px', border: '1px solid var(--border-glass-bright)' }}>
+                                <div style={{ marginBottom: '2.5rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0 }}>{selectedAssignment.title}</h2>
+                                        <NeonBadge color={getStatus(selectedAssignment).type}>{getStatus(selectedAssignment).label}</NeonBadge>
                                     </div>
-                                    <div style={{ fontSize: '0.9rem', opacity: 0.6, marginBottom: '1.5rem' }}>
-                                        Assigned by {selectedAssignment?.teacherId?.name || 'Instructor'} • {selectedAssignment?.createdAt ? new Date(selectedAssignment.createdAt).toLocaleDateString() : 'N/A'}
+                                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+                                        <Sparkles size={16} color="var(--primary)" />
+                                        Assigned by {selectedAssignment.teacherId?.name || 'Instructor'} • {new Date(selectedAssignment.createdAt).toLocaleDateString()}
                                     </div>
-                                    <p style={{ lineHeight: '1.6', opacity: 0.9, whiteSpace: 'pre-wrap' }}>
-                                        {selectedAssignment?.description || 'No detailed instructions provided.'}
-                                    </p>
-
+                                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-glass)', lineHeight: '1.8', whiteSpace: 'pre-wrap' }}>
+                                        {selectedAssignment.description || 'No detailed specifications provided.'}
+                                    </div>
                                 </div>
 
                                 {!isTeacher && (
-                                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+                                    <div style={{ borderTop: '1px solid var(--border-glass)', paddingTop: '2.5rem' }}>
                                         {mySubmission ? (
-                                            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '1.5rem', borderRadius: '12px' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10b981', marginBottom: '0.75rem', fontWeight: 600 }}>
-                                                    <BookOpen size={18} /> Assignment Submitted
+                                            <GlassCard style={{ background: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.2)', padding: '2rem' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#22c55e', marginBottom: '1rem', fontWeight: 800, letterSpacing: '1px', fontSize: '0.9rem' }}>
+                                                    <BookOpen size={20} /> SUBMISSION RECORDED
                                                 </div>
-                                                <div style={{ fontSize: '0.9rem', opacity: 0.8, wordBreak: 'break-all', marginBottom: '1rem' }}>
-                                                    <strong>Your Content:</strong> {mySubmission.content}
+                                                <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{mySubmission.content}</p>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+                                                    Timestamp: {new Date(mySubmission.submittedAt).toLocaleString()}
                                                 </div>
-                                                <div style={{ fontSize: '0.75rem', opacity: 0.5 }}>
-                                                    Submitted on {new Date(mySubmission.submittedAt).toLocaleString()}
-                                                </div>
-                                            </div>
+                                            </GlassCard>
                                         ) : (
                                             <form onSubmit={handleSubmitSubmission}>
                                                 <div className="form-group">
-                                                    <label className="form-label" style={{ marginBottom: '1rem' }}>Upload Submission / Link</label>
+                                                    <label className="form-label" style={{ marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 700 }}>SUBMISSION PAYLOAD</label>
                                                     <Input 
                                                         as="textarea" 
-                                                        placeholder="Paste your submission link or detailed solution here..." 
+                                                        placeholder="Enter solution content or deployment URL..." 
+                                                        style={{ background: 'rgba(255,255,255,0.01)', minHeight: '150px' }}
                                                         value={submissionContent}
                                                         onChange={(e) => setSubmissionContent(e.target.value)}
-                                                        rows={5}
                                                         required
                                                     />
                                                 </div>
-                                                <Button 
-                                                    type="submit" 
-                                                    variant="primary" 
-                                                    style={{ width: '100%', marginTop: '1rem' }}
-                                                    disabled={submitting}
-                                                >
-                                                    {submitting ? 'Submitting...' : 'Mark as Done'}
-                                                </Button>
+                                                <GlowButton type="submit" style={{ width: '100%', marginTop: '1.5rem', justifyContent: 'center' }} disabled={submitting}>
+                                                    {submitting ? 'PROCESSING...' : 'INITIALIZE SUBMISSION'}
+                                                </GlowButton>
                                             </form>
                                         )}
                                     </div>
                                 )}
-                            </Card>
+                            </GlassCard>
                         ) : (
-                            <div style={{ textAlign: 'center', opacity: 0.3, marginTop: '4rem' }}>
-                                <FileText size={64} style={{ marginBottom: '1rem' }} />
-                                <p>Select an assignment to view details</p>
+                            <div style={{ textAlign: 'center', padding: '6rem 2rem', opacity: 0.2 }}>
+                                <FileText size={80} style={{ marginBottom: '1.5rem' }} />
+                                <p>Select an assignment to initialize view</p>
                             </div>
                         )}
                     </div>
                 </div>
-            )}
 
-            {showModal && (
-                <div 
-                    className="modal-overlay" 
-                    onClick={(e) => { if (modalRef.current && !modalRef.current.contains(e.target)) setShowModal(false); }}
-                >
-                    <div ref={modalRef} className="modal animate-fade-in shadow-lg">
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
-                            <h2 style={{ margin: 0 }}>Create Assignment</h2>
-                            <X style={{ cursor: 'pointer', opacity: 0.6 }} onClick={() => { setShowModal(false); setError(null); }} />
-                        </div>
-
-                        {error && <div className="error-alert">{error}</div>}
-
-                        <form onSubmit={handleCreateAssignment} className="modal-form">
-                            <div className="form-group">
-                                <label className="form-label">Assignment Title</label>
-                                <Input name="title" placeholder="e.g. Mid-term Research Paper" value={formData.title} onChange={handleInputChange} required />
+                {/* MODAL REDESIGN */}
+                {showModal && (
+                    <div className="modal-overlay" onClick={(e) => { if (modalRef.current && !modalRef.current.contains(e.target)) setShowModal(false); }}>
+                        <GlassCard ref={modalRef} className="animate-in" style={{ width: '100%', maxWidth: '600px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)', position: 'relative' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', alignItems: 'center' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Deploy New Assignment</h2>
+                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowModal(false)}>
+                                    <X size={24} />
+                                </button>
                             </div>
-                            <div className="form-group">
-                                <label className="form-label">Detailed Description</label>
-                                <Input as="textarea" name="description" placeholder="Provide instructions for students..." value={formData.description} onChange={handleInputChange} rows={3} />
-                            </div>
-                            <div className="form-row">
+
+                            <form onSubmit={handleCreateAssignment} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 <div className="form-group">
-                                    <label className="form-label">Target Batch</label>
-                                    <Input as="select" name="batchId" value={formData.batchId} onChange={handleInputChange} required>
-                                        <option value="">Select Batch</option>
-                                        {batches.map(b => (
-                                            <option key={b._id} value={b._id}>{b.name}</option>
-                                        ))}
-                                    </Input>
+                                    <label className="form-label">Title</label>
+                                    <Input name="title" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.title} onChange={handleInputChange} required />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Due Date</label>
-                                    <Input type="date" name="dueDate" value={formData.dueDate} onChange={handleInputChange} required />
+                                    <label className="form-label">Specifications</label>
+                                    <Input as="textarea" name="description" style={{ background: 'rgba(255,255,255,0.02)', minHeight: '100px' }} value={formData.description} onChange={handleInputChange} rows={3} />
                                 </div>
-                            </div>
-                            <div className="modal-actions">
-                                <Button type="button" variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
-                                <Button type="submit" variant="primary" disabled={actionLoading}>
-                                    {actionLoading ? 'Creating...' : 'Assign to Batch'}
-                                </Button>
-                            </div>
-                        </form>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                    <div className="form-group">
+                                        <label className="form-label">Target Batch</label>
+                                        <Input as="select" name="batchId" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.batchId} onChange={handleInputChange} required>
+                                            <option value="">Select Target...</option>
+                                            {batches.map(b => (
+                                                <option key={b._id} value={b._id}>{b.name}</option>
+                                            ))}
+                                        </Input>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Deadline</label>
+                                        <Input type="date" name="dueDate" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.dueDate} onChange={handleInputChange} required />
+                                    </div>
+                                </div>
+                                <GlowButton type="submit" style={{ width: '100%', marginTop: '1rem', justifyContent: 'center' }} disabled={actionLoading}>
+                                    {actionLoading ? 'DEPLOYING...' : 'INITIALIZE DEPLOYMENT'}
+                                </GlowButton>
+                            </form>
+                        </GlassCard>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };
-
-const StatusBadge = ({ status }) => (
-    <div className={`status-badge status-${status.type}`} style={{ fontSize: '0.85rem', padding: '0.3rem 0.8rem', borderRadius: '20px' }}>
-        {status.label}
-    </div>
-);
 
 export default Assignments;
