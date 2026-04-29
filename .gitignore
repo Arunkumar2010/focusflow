@@ -5,6 +5,7 @@ frontend/node_modules/
 
 # Build directories
 dist/
+build/
 frontend/dist/
 
 # Environment variables
@@ -17,6 +18,14 @@ frontend/.env
 Thumbs.db
 
 # Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Python
+__pycache__/
+*.pyc
+
+# Database
+db.sqlite3
