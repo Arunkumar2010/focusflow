@@ -63,7 +63,7 @@ const Home = () => {
       <section className="hero-section">
         <div className="home-container">
           <div className="hero-content">
-            <NeonBadge className="mb-4">v2.0 • AI-Powered Productivity</NeonBadge>
+            <NeonBadge className="mb-4">✨ v2.0 • AI-Powered Productivity</NeonBadge>
             <h1 className="hero-title animate-in">
               The Future of <GradientText>Academic Excellence</GradientText>
             </h1>
@@ -73,7 +73,7 @@ const Home = () => {
             </p>
             <div className="hero-btns animate-in" style={{ animationDelay: '0.4s' }}>
               <GlowButton onClick={() => navigate('/login')}>
-                Launch App <ArrowRight size={20} />
+                🚀 Launch App <ArrowRight size={20} />
               </GlowButton>
               <button className="btn-secondary-outline" onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}>
                 Explore Core Features
@@ -112,7 +112,7 @@ const Home = () => {
           <div className="roles-grid">
             <GlassCard className="role-card">
               <div className="role-header">
-                <span className="role-emoji">👨‍🎓</span>
+                <span className="role-emoji">🎓</span>
                 <GradientText>For Students</GradientText>
               </div>
               <ul className="role-list">
@@ -124,7 +124,7 @@ const Home = () => {
             </GlassCard>
             <GlassCard className="role-card">
               <div className="role-header">
-                <span className="role-emoji">👨‍🏫</span>
+                <span className="role-emoji">🧑‍🏫</span>
                 <GradientText>For Teachers</GradientText>
               </div>
               <ul className="role-list">
@@ -171,7 +171,7 @@ const Home = () => {
             <h2>Ready for the <GradientText>Next Level</GradientText>?</h2>
             <p>Join the next generation of educators and learners today.</p>
             <GlowButton onClick={() => navigate('/login')}>
-              Join FocusFlow <ArrowRight size={20} />
+              🚀 Join FocusFlow <ArrowRight size={20} />
             </GlowButton>
           </GlassCard>
         </div>

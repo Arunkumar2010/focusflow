@@ -1,0 +1,103 @@
+.futuristic-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background-color: #050508;
+}
+
+.bg-content-wrapper {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Base Animated Gradient */
+.animated-gradient-base {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #050508 0%, #0a0a1a 50%, #050508 100%);
+    background-size: 400% 400%;
+    animation: gradientMove 20s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mouse Follow Glow */
+.mouse-follow-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(57, 209, 220, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(40px);
+    transition: transform 0.1s ease-out;
+}
+
+/* Floating Blur Blobs */
+.blur-blob {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(237, 128, 253, 0.05) 0%, transparent 70%);
+    filter: blur(60px);
+    z-index: 0;
+    animation: floatBlob linear infinite;
+}
+
+.blur-blob:nth-child(even) {
+    background: radial-gradient(circle, rgba(57, 209, 220, 0.05) 0%, transparent 70%);
+}
+
+@keyframes floatBlob {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(100px, 100px) scale(1.1); }
+    66% { transform: translate(-50px, 150px) scale(0.9); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Particles */
+.particles-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.particle {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    opacity: 0;
+    animation: particleFloatFade linear infinite;
+}
+
+@keyframes particleFloatFade {
+    0% { transform: translate(0, 0); opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.5; }
+    100% { transform: translate(50px, -100px); opacity: 0; }
+}
+
+/* Grid Overlay */
+.bg-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 3;
+    pointer-events: none;
+}

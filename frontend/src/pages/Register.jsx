@@ -28,9 +28,9 @@ const Register = () => {
             <GlassCard className="animate-in" style={styles.card}>
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                        Join <GradientText>FocusFlow</GradientText>
+                        Join <GradientText>⚡ FocusFlow</GradientText>
                     </h2>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Initialize New Identity</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>✨ Initialize New Identity</p>
                 </div>
                 
                 {error && (
@@ -46,7 +46,7 @@ const Register = () => {
                             type="text" 
                             name="name"
                             placeholder="Full Name"
-                            className="form-control" 
+                            className="form-control input-glow" 
                             style={styles.input}
                             value={formData.name} 
                             onChange={handleChange} 
@@ -59,7 +59,7 @@ const Register = () => {
                             type="email" 
                             name="email"
                             placeholder="Email Address"
-                            className="form-control" 
+                            className="form-control input-glow" 
                             style={styles.input}
                             value={formData.email} 
                             onChange={handleChange} 
@@ -72,7 +72,7 @@ const Register = () => {
                             type="password" 
                             name="password"
                             placeholder="Secure Password"
-                            className="form-control" 
+                            className="form-control input-glow" 
                             style={styles.input}
                             value={formData.password} 
                             onChange={handleChange} 
@@ -84,19 +84,18 @@ const Register = () => {
                         <Shield size={18} style={styles.icon} />
                         <select 
                             name="role" 
-                            className="form-control" 
+                            className="form-control input-glow" 
                             style={{ ...styles.input, appearance: 'none' }}
                             value={formData.role} 
                             onChange={handleChange}
                         >
-                            <option value="student">Student Account</option>
-                            <option value="teacher">Educator Account</option>
-                            <option value="admin">Administrator</option>
+                            <option value="student">🎓 Student Account</option>
+                            <option value="teacher">🧑‍🏫 Educator Account</option>
+                            <option value="admin">🛡️ Administrator</option>
                         </select>
                     </div>
                     <GlowButton type="submit" style={{ width: '100%', marginTop: '0.5rem', justifyContent: 'center' }}>
-                        <UserPlus size={18} />
-                        Initialize Account
+                        🚀 Initialize Account
                     </GlowButton>
                 </form>
 

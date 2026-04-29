@@ -30,7 +30,7 @@ const Navbar = () => {
                     <div style={{ background: 'var(--accent-gradient)', padding: '6px', borderRadius: '10px', display: 'flex', alignItems: 'center' }}>
                         <Zap size={20} color="white" />
                     </div>
-                    <h2 className="logo" style={{ fontWeight: 800 }}>FocusFlow</h2>
+                    <h2 className="logo" style={{ fontWeight: 800 }}>⚡ FocusFlow</h2>
                 </div>
             </div>
 

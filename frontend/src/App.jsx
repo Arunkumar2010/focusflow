@@ -21,6 +21,7 @@ import BatchDetails from './pages/BatchDetails';
 import LiveClasses from './pages/LiveClasses';
 import StudentClasses from './pages/StudentClasses';
 import Assignments from './pages/Assignments';
+import AnimatedBackground from './components/AnimatedBackground';
 import './styles/App.css';
 
 const PrivateRoute = ({ children }) => {
@@ -58,114 +59,106 @@ const AppRoutes = () => {
                 </PrivateRoute>
             } />
                 
-                <Route path="/tasks" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <Tasks />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
+            <Route path="/tasks" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <Tasks />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
 
-                <Route path="/batches" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <Batches />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
+            <Route path="/batches" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <Batches />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
 
-                <Route path="/batches/:id" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <BatchDetails />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
+            <Route path="/batches/:id" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <BatchDetails />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
 
-                <Route path="/classes" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <StudentClasses />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
+            <Route path="/classes" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <StudentClasses />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
 
-                <Route path="/schedule-class" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <LiveClasses />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
+            <Route path="/schedule-class" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <LiveClasses />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
 
-                <Route path="/assignments" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <Assignments />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
-                
-                <Route path="/productivity" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <Productivity />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
-                
-                <Route path="/profile" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <Profile />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
+            <Route path="/assignments" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <Assignments />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
+            
+            <Route path="/productivity" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <Productivity />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
+            
+            <Route path="/profile" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <Profile />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
 
-                <Route path="/timer" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <StudyTimer />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
-                
-                <Route path="/settings" element={
-                    <PrivateRoute>
-                        <AppLayout>
-                            <Settings />
-                        </AppLayout>
-                    </PrivateRoute>
-                } />
-            </Routes>
+            <Route path="/timer" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <StudyTimer />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
+            
+            <Route path="/settings" element={
+                <PrivateRoute>
+                    <AppLayout>
+                        <Settings />
+                    </AppLayout>
+                </PrivateRoute>
+            } />
+        </Routes>
     );
 };
 
 const App = () => {
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            document.documentElement.style.setProperty('--x', `${e.clientX}px`);
-            document.documentElement.style.setProperty('--y', `${e.clientY}px`);
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
     return (
         <GlobalErrorBoundary>
             <ThemeProvider>
                 <AuthProvider>
                     <AchievementProvider>
                         <HashRouter>
-                        <div className="content-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', color: 'var(--text-primary)' }}>
-                            <Routes>
-                                <Route path="/login" element={null} />
-                                <Route path="/register" element={null} />
-                                <Route path="*" element={<Navbar />} />
-                            </Routes>
-                            <AppRoutes />
-                        </div>
+                            <AnimatedBackground>
+                                <div className="content-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', color: 'var(--text-primary)' }}>
+                                    <Routes>
+                                        <Route path="/login" element={null} />
+                                        <Route path="/register" element={null} />
+                                        <Route path="*" element={<Navbar />} />
+                                    </Routes>
+                                    <AppRoutes />
+                                </div>
+                            </AnimatedBackground>
                         </HashRouter>
                     </AchievementProvider>
                 </AuthProvider>

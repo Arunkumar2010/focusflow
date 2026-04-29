@@ -32,7 +32,7 @@ const Login = () => {
             <GlassCard className="animate-in" style={styles.card}>
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                        <GradientText>FocusFlow</GradientText>
+                        <GradientText>⚡ FocusFlow</GradientText>
                     </h2>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Secure Portal Initialization</p>
                 </div>
@@ -50,7 +50,7 @@ const Login = () => {
                             type="email" 
                             name="email"
                             placeholder="Email Address"
-                            className="form-control" 
+                            className="form-control input-glow" 
                             style={styles.input}
                             value={formData.email} 
                             onChange={handleChange} 
@@ -63,7 +63,7 @@ const Login = () => {
                             type="password" 
                             name="password"
                             placeholder="Password"
-                            className="form-control" 
+                            className="form-control input-glow" 
                             style={styles.input}
                             value={formData.password} 
                             onChange={handleChange} 

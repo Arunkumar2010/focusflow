@@ -56,10 +56,10 @@ const Dashboard = () => {
             <div className="animate-in">
                 <header style={{ marginBottom: '3rem' }}>
                     <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                        Welcome back, <GradientText>{user?.name || 'User'}</GradientText>
+                        Welcome back, <GradientText>{user?.name || 'User'} ✨</GradientText>
                     </h1>
                     <p style={{ opacity: 0.6, fontSize: '1.1rem' }}>
-                        {isTeacher ? "Your teaching ecosystem is synchronized." : "Track your academic performance and goals."}
+                        {isTeacher ? "⚡ Your teaching ecosystem is synchronized." : "⚡ Track your academic performance and goals."}
                     </p>
                 </header>
 
@@ -95,7 +95,7 @@ const Dashboard = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
                     {/* 🧊 CLASSES WIDGET */}
-                    <GlassCard>
+                    <GlassCard className="glass-hover">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>
                                 <Video size={20} color="var(--primary)" /> {isTeacher ? 'Upcoming Sessions' : 'Next Classes'}
@@ -129,7 +129,7 @@ const Dashboard = () => {
                     </GlassCard>
 
                     {/* 🧊 ASSIGNMENTS WIDGET */}
-                    <GlassCard>
+                    <GlassCard className="glass-hover">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>
                                 <FileText size={20} color="var(--secondary)" /> Academic Tasks
