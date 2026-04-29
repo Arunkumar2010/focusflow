@@ -25,7 +25,7 @@
     background: linear-gradient(135deg, #020617 0%, #0f172a 25%, #020617 50%, #1e1b4b 75%, #020617 100%);
     background-size: 400% 400%;
     animation: gradientMove 15s ease infinite; /* Slightly faster */
-    opacity: 0.8;
+    opacity: 0.6; /* Reduced from 0.8 */
 }
 
 @keyframes gradientMove {
@@ -88,8 +88,8 @@
 
 @keyframes particleFloatFade {
     0% { transform: translate(0, 0); opacity: 0; }
-    20% { opacity: 0.8; }
-    80% { opacity: 0.8; }
+    20% { opacity: 0.4; } /* Reduced from 0.8 */
+    80% { opacity: 0.4; } /* Reduced from 0.8 */
     100% { transform: translate(100px, -200px); opacity: 0; }
 }
 

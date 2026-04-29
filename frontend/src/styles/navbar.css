@@ -1,18 +1,25 @@
-/* Futuristic Navbar */
+/* Slim, Premium Futuristic Navbar */
 
 .navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1.5rem;
-    height: 70px;
-    transition: var(--transition-smooth);
+    padding: 0 4rem; /* Increased horizontal padding */
+    height: 64px; /* Slimmer height */
+    background: rgba(13, 17, 23, 0.7); /* Subtle transparency */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.3s ease;
 }
 
 .brand-group {
     display: flex;
     align-items: center;
-    gap: 1rem;
 }
 
 .logo-container {
@@ -22,67 +29,95 @@
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.25rem; /* Slightly smaller logo text */
+    font-weight: 800;
     color: var(--text-main);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.02em;
 }
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 2.5rem; /* Consistent spacing */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Perfectly centered */
 }
 
 .nav-link {
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
-    font-size: 0.95rem;
-    transition: var(--transition-fast);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
 }
 
 .nav-link:hover {
     color: var(--primary);
+    text-shadow: 0 0 10px rgba(57, 209, 220, 0.3);
 }
 
 .user-section {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .theme-btn {
-    background: var(--bg-glass);
-    border: 1px solid var(--border-glass);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition-bounce);
+    transition: all 0.3s ease;
 }
 
 .theme-btn:hover {
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.08);
     border-color: var(--primary);
 }
 
 .btn-logout-icon {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-smooth);
+    transition: all 0.3s ease;
 }
 
 .btn-logout-icon:hover {
     background: #ef4444;
     color: white;
+    border-color: #ef4444;
+}
+
+.user-info-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .navbar { padding: 0 2rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links { display: none; } /* Hide links on mobile for simplicity in this redesign */
+    .navbar { padding: 0 1.5rem; }
 }
