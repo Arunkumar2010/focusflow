@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Video, Calendar, Clock, Plus, X, Sparkles, Activity } from 'lucide-react';
 import classService from '../services/classService';
 import batchService from '../services/batchService';
@@ -23,6 +24,12 @@ const LiveClasses = () => {
         time: '',
         meetingLink: ''
     });
+
+    // Prevent background scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = showModal ? 'hidden' : 'auto';
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [showModal]);
 
     useEffect(() => {
         fetchData();
@@ -101,6 +108,63 @@ const LiveClasses = () => {
         }
     };
 
+    // Modal Component using Portal
+    const SessionModal = ({ onClose }) => {
+        return createPortal(
+            <div className="modal-overlay" onClick={onClose}>
+                <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', alignItems: 'center' }}>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'white' }}>Initialize Session</h2>
+                        <button 
+                            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }} 
+                            onClick={onClose}
+                        >
+                            <X size={24} />
+                        </button>
+                    </div>
+
+                    {error && <div style={styles.errorAlert}>{error}</div>}
+
+                    <form onSubmit={handleCreateClass} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>NEXUS DESIGNATION</label>
+                            <Input name="title" style={{ background: 'rgba(255,255,255,0.03)' }} placeholder="e.g. CORE-SYSTEMS ARCHITECTURE" value={formData.title} onChange={handleInputChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>BRIEFING</label>
+                            <Input as="textarea" name="description" style={{ background: 'rgba(255,255,255,0.03)' }} placeholder="Deployment instructions..." value={formData.description} onChange={handleInputChange} rows={2} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>TARGET COHORT</label>
+                            <Input as="select" name="batch" style={{ background: 'rgba(255,255,255,0.03)' }} value={formData.batch} onChange={handleInputChange} required>
+                                <option value="">Select Target...</option>
+                                {batches.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
+                            </Input>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>DATE</label>
+                                <Input type="date" name="date" style={{ background: 'rgba(255,255,255,0.03)' }} value={formData.date} onChange={handleInputChange} required />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>TIME</label>
+                                <Input type="time" name="time" style={{ background: 'rgba(255,255,255,0.03)' }} value={formData.time} onChange={handleInputChange} required />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px' }}>VIRTUAL NEXUS LINK</label>
+                            <Input type="url" name="meetingLink" style={{ background: 'rgba(255,255,255,0.03)' }} placeholder="https://..." value={formData.meetingLink} onChange={handleInputChange} required />
+                        </div>
+                        <GlowButton type="submit" style={{ width: '100%', marginTop: '1rem', justifyContent: 'center' }}>
+                            DEPLOY TO NEXUS
+                        </GlowButton>
+                    </form>
+                </div>
+            </div>,
+            document.body
+        );
+    };
+
     return (
         <div className="page-container">
             <div className="animate-in">
@@ -163,56 +227,8 @@ const LiveClasses = () => {
                     </div>
                 )}
 
-                {/* MODAL REDESIGN */}
-                {showModal && (
-                    <div className="modal-overlay" onClick={(e) => { if (modalRef.current && !modalRef.current.contains(e.target)) setShowModal(false); }}>
-                        <GlassCard className="animate-in" style={{ width: '100%', maxWidth: '600px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)', position: 'relative' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', alignItems: 'center' }}>
-                                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Initialize Session</h2>
-                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowModal(false)}>
-                                    <X size={24} />
-                                </button>
-                            </div>
-
-                            {error && <div style={styles.errorAlert}>{error}</div>}
-
-                            <form onSubmit={handleCreateClass} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                <div className="form-group">
-                                    <label className="form-label">Nexus Designation (Title)</label>
-                                    <Input name="title" style={{ background: 'rgba(255,255,255,0.02)' }} placeholder="e.g. CORE-SYSTEMS ARCHITECTURE" value={formData.title} onChange={handleInputChange} required />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Briefing (Description)</label>
-                                    <Input as="textarea" name="description" style={{ background: 'rgba(255,255,255,0.02)' }} placeholder="Deployment instructions..." value={formData.description} onChange={handleInputChange} rows={3} />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Target Cohort</label>
-                                    <Input as="select" name="batch" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.batch} onChange={handleInputChange} required>
-                                        <option value="">Select Target...</option>
-                                        {batches.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
-                                    </Input>
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                                    <div className="form-group">
-                                        <label className="form-label">Date</label>
-                                        <Input type="date" name="date" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.date} onChange={handleInputChange} required />
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label">Synchronization Time</label>
-                                        <Input type="time" name="time" style={{ background: 'rgba(255,255,255,0.02)' }} value={formData.time} onChange={handleInputChange} required />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Virtual Link (Zoom/Meet/Nexus)</label>
-                                    <Input type="url" name="meetingLink" style={{ background: 'rgba(255,255,255,0.02)' }} placeholder="https://..." value={formData.meetingLink} onChange={handleInputChange} required />
-                                </div>
-                                <GlowButton type="submit" style={{ width: '100%', marginTop: '1rem', justifyContent: 'center' }}>
-                                    DEPLOY TO NEXUS
-                                </GlowButton>
-                            </form>
-                        </GlassCard>
-                    </div>
-                )}
+                {/* MODAL PORTAL */}
+                {showModal && <SessionModal onClose={() => setShowModal(false)} />}
             </div>
         </div>
     );

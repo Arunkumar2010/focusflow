@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { Users, Plus, BookOpen, UserPlus, Mail, X, Shield, Sparkles } from 'lucide-react';
 import batchService from '../services/batchService';
 import { useAuth } from '../hooks/useAuth';
@@ -23,6 +24,17 @@ const Batches = () => {
         name: '',
         subject: ''
     });
+
+    const isModalOpen = showCreateModal || showAddStudentModal;
+
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [isModalOpen]);
 
     useEffect(() => {
         fetchBatches();
@@ -173,13 +185,13 @@ const Batches = () => {
                     </div>
                 )}
 
-                {/* MODALS */}
-                {showCreateModal && (
-                    <div className="modal-overlay" onClick={(e) => { if (createModalRef.current && !createModalRef.current.contains(e.target)) setShowCreateModal(false); }}>
-                        <GlassCard ref={createModalRef} className="animate-in" style={{ width: '100%', maxWidth: '500px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)' }}>
+                {/* MODALS (USING PORTALS) */}
+                {showCreateModal && ReactDOM.createPortal(
+                    <div className="batch-modal-overlay" onClick={() => setShowCreateModal(false)}>
+                        <div className="batch-modal" onClick={(e) => e.stopPropagation()}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', alignItems: 'center' }}>
                                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Cohort Initialization</h2>
-                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowCreateModal(false)}>
+                                <button className="close-btn" style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowCreateModal(false)}>
                                     <X size={24} />
                                 </button>
                             </div>
@@ -199,16 +211,17 @@ const Batches = () => {
                                     {actionLoading ? 'INITIALIZING...' : 'START DEPLOYMENT'}
                                 </GlowButton>
                             </form>
-                        </GlassCard>
-                    </div>
+                        </div>
+                    </div>,
+                    document.body
                 )}
 
-                {showAddStudentModal && (
-                    <div className="modal-overlay" onClick={(e) => { if (addStudentModalRef.current && !addStudentModalRef.current.contains(e.target)) setShowAddStudentModal(false); }}>
-                        <GlassCard ref={addStudentModalRef} className="animate-in" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)' }}>
+                {showAddStudentModal && ReactDOM.createPortal(
+                    <div className="batch-modal-overlay" onClick={() => setShowAddStudentModal(false)}>
+                        <div className="batch-modal" onClick={(e) => e.stopPropagation()}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', alignItems: 'center' }}>
                                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Enroll Unit</h2>
-                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowAddStudentModal(false)}>
+                                <button className="close-btn" style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowAddStudentModal(false)}>
                                     <X size={24} />
                                 </button>
                             </div>
@@ -225,9 +238,60 @@ const Batches = () => {
                                     {actionLoading ? 'ENROLLING...' : 'AUTHORIZE ENROLLMENT'}
                                 </GlowButton>
                             </form>
-                        </GlassCard>
-                    </div>
+                        </div>
+                    </div>,
+                    document.body
                 )}
+
+                <style>{`
+                    .batch-modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100vw;
+                        height: 100vh;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: rgba(5, 10, 25, 0.75);
+                        backdrop-filter: blur(8px);
+                        -webkit-backdrop-filter: blur(8px);
+                        z-index: 99999;
+                    }
+
+                    .batch-modal {
+                        width: 480px;
+                        max-width: 92%;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                        padding: 28px;
+                        border-radius: 16px;
+                        background: rgba(15, 20, 40, 0.98);
+                        border: 1px solid rgba(255,255,255,0.08);
+                        position: relative;
+                        animation: fadeUp 0.25s ease;
+                        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+                        color: white;
+                    }
+
+                    .batch-modal .close-btn {
+                        position: absolute;
+                        top: 14px;
+                        right: 18px;
+                        cursor: pointer;
+                    }
+
+                    @keyframes fadeUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(25px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                `}</style>
             </div>
         </div>
     );

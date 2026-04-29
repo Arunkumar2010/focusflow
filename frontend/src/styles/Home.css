@@ -1,78 +1,64 @@
-/* Home.css - Balanced & Premium Spacing */
+/* FocusFlow: Premium SaaS Home UI */
 
 .home-page-v2 {
   overflow-x: hidden;
+  background: transparent; /* Handled by AnimatedBackground */
 }
 
 .home-container {
-  max-width: 1100px; /* More focused width for balance */
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
-/* 🚀 HERO SECTION - REFINED SPACING */
-.hero-section {
-  min-height: 90vh;
+/* 🚀 HERO SECTION - CENTERED & PREMIUM */
+.hero-section.centered {
+  min-height: 85vh;
   display: flex;
   align-items: center;
-  padding-top: 120px; /* Significant top spacing below navbar */
-  padding-bottom: 80px;
-  position: relative;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 0 60px;
 }
 
-.hero-content {
-  flex: 1.2;
-  text-align: left;
-  z-index: 2;
+.hero-content.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-title {
-  font-size: clamp(2.5rem, 8vw, 4.5rem); /* Less aggressive size */
+  font-size: clamp(2.5rem, 8vw, 5rem);
   font-weight: 900;
   line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.5rem; /* Clean spacing */
+  margin-bottom: 2rem;
+  letter-spacing: -0.04em;
 }
 
-.gradient-text-animated {
-  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent-cyan), var(--primary));
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
-}
-
-.hero-description {
-  font-size: 1.15rem; /* Slightly smaller for better contrast */
+.hero-description.center-text {
+  font-size: 1.25rem;
   color: var(--text-muted);
-  max-width: 650px; /* Limited width for readability */
-  margin-bottom: 3rem;
-  line-height: 1.7; /* Improved line spacing */
-  letter-spacing: 0.01em;
+  max-width: 800px;
+  margin: 0 auto 3.5rem;
+  line-height: 1.6;
 }
 
 .hero-btns {
   display: flex;
-  gap: 20px; /* Better gap between buttons */
-  align-items: center;
+  gap: 20px;
+  justify-content: center;
 }
 
 .hero-primary-btn {
+  padding: 16px 36px;
   font-size: 1rem;
-  padding: 14px 32px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hero-primary-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 10px 25px rgba(57, 209, 220, 0.3);
 }
 
 .btn-glass-secondary {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-main);
-  padding: 14px 28px;
+  padding: 16px 32px;
   border-radius: var(--radius-sm);
   font-weight: 600;
   display: flex;
@@ -85,64 +71,44 @@
 
 .btn-glass-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-3px);
   border-color: var(--primary);
+  transform: translateY(-2px);
 }
 
-/* 🖼️ HERO VISUAL */
-.hero-visual {
-  flex: 0.8;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  perspective: 1000px;
-}
-
-.hero-orb {
-  position: absolute;
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
-  filter: blur(50px);
-  z-index: -1;
-  opacity: 0.4; /* Toned down brightness */
-  animation: orbPulse 12s infinite ease-in-out;
-}
-
-.hero-orb.secondary {
-  background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%);
-  width: 250px;
-  height: 250px;
-  opacity: 0.3;
-  animation-delay: -6s;
-}
-
-@keyframes orbPulse {
-  0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.3; }
-  50% { transform: scale(1.1) translate(20px, -15px); opacity: 0.5; }
-}
-
-.hero-preview-card {
-  width: 400px;
-  height: 280px;
-  padding: 1.5rem;
-  border: 1px solid var(--border-glass-bright);
-  transform: rotateY(-12deg) rotateX(8deg);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
-/* 🧊 FEATURES SECTION V2 */
+/* 🧊 FEATURES SECTION */
 .features-section {
-  padding: 8rem 0; /* Consistent spacing */
+  padding: 100px 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
 }
 
 .feature-card-v2 {
-  position: relative;
-  padding: 2.5rem 2rem;
+  padding: 3rem 2rem;
   height: 100%;
-  overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: all 0.3s ease;
 }
 
 .feature-card-v2:hover {
@@ -151,70 +117,172 @@
 }
 
 .feature-icon-v2 {
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-glass);
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
   color: var(--primary);
-  transition: all 0.3s ease;
 }
 
-/* 👥 ROLES LAYOUT */
+.feature-card-v2 h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card-v2 p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* 👥 ROLES SECTION */
+.roles-section {
+  padding: 80px 0;
+}
+
 .roles-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  padding: 4rem 0;
 }
 
 .role-v2-card {
   padding: 3.5rem;
-  border-radius: var(--radius-xl);
+  border-radius: 30px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-glass);
   backdrop-filter: blur(20px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.role-v2-card:hover {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .role-v2-icon {
   width: 70px;
   height: 70px;
   background: var(--accent-gradient);
-  border-radius: 18px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: white;
 }
 
 .role-v2-card h2 {
   font-size: 2.25rem;
-  font-weight: 800;
   margin-bottom: 1rem;
 }
 
-/* 📂 FOOTER V2 */
+.role-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.role-features span {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ⚡ CTA SECTION */
+.infra-section {
+  padding: 100px 0;
+}
+
+.centered-cta {
+  text-align: center;
+  padding: 5rem;
+  border: 1px solid var(--border-glass-bright);
+}
+
+.cta-v2-content.centered h2 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.cta-v2-content.centered p {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+}
+
+.cta-btn {
+  padding: 18px 48px;
+  font-size: 1.1rem;
+}
+
+/* 📂 FOOTER */
 .footer-v2 {
-  padding: 5rem 0 3rem;
+  padding: 80px 0 40px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4rem;
+}
+
+.footer-brand h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.footer-brand p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.footer-links span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.footer-links span:hover {
+  color: var(--primary);
+}
+
+.footer-bottom {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* 📱 RESPONSIVE */
 @media (max-width: 1024px) {
-  .hero-section { flex-direction: column; text-align: center; padding-top: 100px; }
-  .hero-content { margin-bottom: 4rem; display: flex; flex-direction: column; align-items: center; }
-  .hero-description { margin-left: auto; margin-right: auto; }
+  .hero-title { font-size: 3.5rem; }
+  .roles-layout { grid-template-columns: 1fr; }
+  .footer-content { flex-direction: column; gap: 3rem; }
 }
 
 @media (max-width: 768px) {
-  .roles-layout { grid-template-columns: 1fr; }
-  .hero-btns { flex-direction: column; width: 100%; gap: 15px; }
+  .hero-btns { flex-direction: column; width: 100%; }
   .hero-primary-btn, .btn-glass-secondary { width: 100%; justify-content: center; }
+  .cta-v2-content.centered h2 { font-size: 2.5rem; }
+  .centered-cta { padding: 3rem 2rem; }
 }

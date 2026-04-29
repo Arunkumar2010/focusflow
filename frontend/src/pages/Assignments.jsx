@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { FileText, Plus, Calendar, BookOpen, X, Sparkles } from 'lucide-react';
 import assignmentService from '../services/assignmentService';
 import batchService from '../services/batchService';
@@ -27,6 +28,15 @@ const Assignments = () => {
         batchId: '',
         dueDate: ''
     });
+
+    useEffect(() => {
+        if (showModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [showModal]);
 
     useEffect(() => {
         fetchData();
@@ -227,13 +237,17 @@ const Assignments = () => {
                     </div>
                 </div>
 
-                {/* MODAL REDESIGN */}
-                {showModal && (
-                    <div className="modal-overlay" onClick={(e) => { if (modalRef.current && !modalRef.current.contains(e.target)) setShowModal(false); }}>
-                        <GlassCard ref={modalRef} className="animate-in" style={{ width: '100%', maxWidth: '600px', padding: '2.5rem', border: '1px solid var(--border-glass-bright)', position: 'relative' }}>
+                {/* MODAL REDESIGN (USING PORTAL FOR PERFECT CENTERING) */}
+                {showModal && ReactDOM.createPortal(
+                    <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                        <div 
+                            className="modal-content animate-pop" 
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ position: 'relative' }}
+                        >
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', alignItems: 'center' }}>
                                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Deploy New Assignment</h2>
-                                <button style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowModal(false)}>
+                                <button className="close-btn" style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }} onClick={() => setShowModal(false)}>
                                     <X size={24} />
                                 </button>
                             </div>
@@ -266,8 +280,9 @@ const Assignments = () => {
                                     {actionLoading ? 'DEPLOYING...' : 'INITIALIZE DEPLOYMENT'}
                                 </GlowButton>
                             </form>
-                        </GlassCard>
-                    </div>
+                        </div>
+                    </div>,
+                    document.body
                 )}
             </div>
         </div>

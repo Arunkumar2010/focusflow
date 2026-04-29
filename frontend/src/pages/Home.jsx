@@ -10,7 +10,6 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Clock,
   Sparkles,
   Rocket,
   GraduationCap,
@@ -39,27 +38,15 @@ const Home = () => {
       color: "secondary"
     },
     {
-      title: "Live Virtual Hub",
+      title: "Live Collaboration",
       description: "One-click access to immersive live classes and collaborative study sessions.",
       icon: <Video size={24} />,
       color: "primary"
     },
     {
-      title: "Data Analytics",
+      title: "Analytics Dashboard",
       description: "Visualize your growth with futuristic charts and deep productivity insights.",
       icon: <BarChart3 size={24} />,
-      color: "secondary"
-    },
-    {
-      title: "Secure Auth",
-      description: "Next-gen security for your academic data with role-based precision.",
-      icon: <ShieldCheck size={24} />,
-      color: "primary"
-    },
-    {
-      title: "Real-time Sync",
-      description: "Always stay updated with instantaneous tracking and notification systems.",
-      icon: <Sparkles size={24} />,
       color: "secondary"
     }
   ];
@@ -88,13 +75,13 @@ const Home = () => {
 
   return (
     <div className="home-page-v2">
-      {/* 🚀 PREMIUM HERO SECTION */}
-      <section className="hero-section">
+      {/* 1. HERO SECTION 🚀 */}
+      <section className="hero-section centered">
         <motion.div 
           className="home-container"
           style={{ opacity, scale }}
         >
-          <div className="hero-content">
+          <div className="hero-content centered">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -122,7 +109,7 @@ const Home = () => {
             </motion.h1>
             
             <motion.p 
-              className="hero-description"
+              className="hero-description center-text"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -149,35 +136,10 @@ const Home = () => {
               </motion.button>
             </motion.div>
           </div>
-
-          <motion.div 
-            className="hero-visual"
-            initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
-            <div className="hero-orb"></div>
-            <div className="hero-orb secondary"></div>
-            <GlassCard className="hero-preview-card">
-              <div className="preview-header">
-                <div className="dot"></div>
-                <div className="dot"></div>
-                <div className="dot"></div>
-              </div>
-              <div className="preview-content">
-                <div className="skeleton-line long"></div>
-                <div className="skeleton-grid">
-                  <div className="skeleton-box"></div>
-                  <div className="skeleton-box"></div>
-                </div>
-                <div className="skeleton-line short"></div>
-              </div>
-            </GlassCard>
-          </motion.div>
         </motion.div>
       </section>
 
-      {/* 🧊 FEATURES SECTION */}
+      {/* 2. FEATURES SECTION 🧊 */}
       <section id="features" className="features-section">
         <div className="home-container">
           <motion.div 
@@ -218,7 +180,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 👥 ROLE SELECTOR SECTION */}
+      {/* 3. USER TYPES SECTION 👥 */}
       <section className="roles-section">
         <div className="home-container">
           <div className="roles-layout">
@@ -259,11 +221,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ⚡ INFRASTRUCTURE SECTION */}
+      {/* 4. CTA SECTION ⚡ */}
       <section className="infra-section">
         <div className="home-container">
-          <GlassCard className="cta-v2-card">
-            <div className="cta-v2-content">
+          <GlassCard className="cta-v2-card centered-cta">
+            <div className="cta-v2-content centered">
               <motion.h2 
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -277,13 +239,11 @@ const Home = () => {
                 Initialize Account 🚀
               </GlowButton>
             </div>
-            <div className="cta-v2-visual">
-               <Shield size={120} className="cta-shield-icon" />
-            </div>
           </GlassCard>
         </div>
       </section>
 
+      {/* 5. FOOTER 📂 */}
       <footer className="footer-v2">
         <div className="home-container">
           <div className="footer-content">
@@ -293,7 +253,7 @@ const Home = () => {
              </div>
              <div className="footer-links">
                <span>Documentation</span>
-               <span>Privacy</span>
+               <span>Privacy Policy</span>
                <span>Security</span>
              </div>
           </div>

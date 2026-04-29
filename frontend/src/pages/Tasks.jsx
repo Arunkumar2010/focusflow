@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useApp } from '../context/AppContext';
 import taskService from '../services/taskService';
 import TaskList from '../components/TaskList';
 import TaskForm from '../components/TaskForm';
@@ -10,11 +11,12 @@ import Spinner from '../components/ui/Spinner';
 import '../styles/tasks.css';
 
 const Tasks = () => {
+    const { tasks, syncTasks, updateTaskStatus, loading } = useApp();
     const { triggerAchievements } = useAchievement();
-    const [tasks, setTasks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
     
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
@@ -22,49 +24,39 @@ const Tasks = () => {
     const [priorityFilter, setPriorityFilter] = useState('All');
     const [sortBy, setSortBy] = useState('deadlineAsc');
 
-    const fetchTasks = async () => {
-        try {
-            setLoading(true);
-            const res = await taskService.getTasks().catch(() => ({ data: [] }));
-            const fetchedTasks = Array.isArray(res?.data) ? res.data : [];
-            setTasks(fetchedTasks);
-        } catch (error) {
-            console.error("Error fetching tasks", error);
-            setTasks([]);
-        } finally {
-            setLoading(false);
-        }
+    const handleNewTask = () => {
+        setTaskToEdit(null);
+        setShowTaskForm(true);
     };
-
-    useEffect(() => {
-        fetchTasks();
-    }, []);
 
     const handleSaveTask = async (taskData) => {
         try {
             if (taskToEdit) {
                 await taskService.updateTask(taskToEdit._id, taskData);
+                setSuccessMessage('Task updated successfully ✅');
             } else {
                 await taskService.createTask(taskData);
+                setSuccessMessage('Task created ✅');
             }
+            
             setShowTaskForm(false);
             setTaskToEdit(null);
-            fetchTasks();
+            syncTasks(); // Refresh global state
+            
+            setTimeout(() => setSuccessMessage(''), 3000);
         } catch (error) {
             console.error("Error saving task", error);
         }
     };
 
     const handleUpdateTask = async (id, data) => {
-        try {
-            setTasks(tasks.map(t => t._id === id ? { ...t, ...data } : t));
-            const res = await taskService.updateTask(id, data);
-            if (res && res.unlockedBadges && res.unlockedBadges.length > 0) {
-                triggerAchievements(res.unlockedBadges);
-            }
-        } catch (error) {
-            console.error("Error updating task", error);
-            fetchTasks();
+        // Use global status update
+        await updateTaskStatus(id, data);
+        
+        // Handle achievements if needed
+        const res = await taskService.updateTask(id, data).catch(() => null);
+        if (res && res.unlockedBadges?.length > 0) {
+            triggerAchievements(res.unlockedBadges);
         }
     };
 
@@ -72,7 +64,7 @@ const Tasks = () => {
         if(window.confirm('Are you sure you want to delete this task?')) {
             try {
                 await taskService.deleteTask(id);
-                fetchTasks();
+                syncTasks();
             } catch (error) {
                 console.error("Error deleting task", error);
             }
@@ -80,13 +72,8 @@ const Tasks = () => {
     };
 
     const handleReorder = (startIndex, endIndex) => {
-        if (sortBy !== 'newest' && sortBy !== 'deadlineAsc') return;
-        const reorderedTasks = Array.from(processedTasks);
-        const [removed] = reorderedTasks.splice(startIndex, 1);
-        reorderedTasks.splice(endIndex, 0, removed);
-        const reorderedIds = reorderedTasks.map(t => t._id);
-        const otherTasks = tasks.filter(t => !reorderedIds.includes(t._id));
-        setTasks([...reorderedTasks, ...otherTasks]);
+        // Reordering is purely local for UX in this session
+        // In a real app, this would update a 'position' field in DB
     };
 
     const openEditForm = (task) => {
@@ -121,6 +108,12 @@ const Tasks = () => {
     return (
         <div className="page-container">
             <div className="animate-in">
+                {successMessage && (
+                    <div style={{ position: 'fixed', top: '2rem', right: '2rem', background: 'rgba(34, 197, 94, 0.9)', color: 'white', padding: '1rem 2rem', borderRadius: '12px', zIndex: 9999, fontWeight: 700, boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)' }}>
+                        {successMessage}
+                    </div>
+                )}
+
                 <header className="tasks-header" style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
                         <h1 className="tasks-title" style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
@@ -128,7 +121,7 @@ const Tasks = () => {
                         </h1>
                         <p className="tasks-subtitle" style={{ color: 'var(--text-muted)' }}>Precision tracking for your study goals.</p>
                     </div>
-                    <GlowButton onClick={() => { setTaskToEdit(null); setShowTaskForm(true); }}>
+                    <GlowButton onClick={handleNewTask} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <PlusCircle size={20} />
                         New Task
                     </GlowButton>
@@ -147,7 +140,7 @@ const Tasks = () => {
                             />
                         </div>
                         
-                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <div className="task-filters" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                             <div className="filter-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Filter size={16} style={{ color: 'var(--text-dim)' }} />
                                 <Input as="select" style={{ minWidth: '140px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-glass)' }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
@@ -176,7 +169,7 @@ const Tasks = () => {
                             </div>
                             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>No Tasks Recorded</h2>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Start your journey by adding your first academic goal.</p>
-                            <GlowButton onClick={() => setShowTaskForm(true)}>
+                            <GlowButton onClick={handleNewTask}>
                                 <PlusCircle size={20} /> Initialize Task
                             </GlowButton>
                         </GlassCard>

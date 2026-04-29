@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
 import { LogOut, User, Sun, Moon, Zap } from 'lucide-react';
@@ -26,12 +26,8 @@ const Navbar = () => {
                 </div>
             </div>
 
-            <div className="nav-links">
-                <Link to="/" className="nav-link">Home</Link>
-                {!user && <Link to="/login" className="nav-link">Login</Link>}
-                {user && <Link to="/dashboard" className="nav-link">Dashboard</Link>}
-                {user && <Link to="/tasks" className="nav-link">Tasks</Link>}
-            </div>
+            {/* Navigation links removed as per request */}
+            <div className="nav-links"></div>
 
             <div className="user-section">
                 <button onClick={toggleTheme} className="theme-btn" title="Toggle System Theme">
@@ -47,13 +43,6 @@ const Navbar = () => {
                             <LogOut size={16} />
                         </button>
                     </div>
-                )}
-                {!user && (
-                    <Link to="/register" style={{ textDecoration: 'none' }}>
-                       <button className="nav-link" style={{ background: 'var(--primary)', color: 'white', padding: '6px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
-                         Join 🚀
-                       </button>
-                    </Link>
                 )}
             </div>
         </nav>

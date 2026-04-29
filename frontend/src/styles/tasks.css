@@ -88,8 +88,29 @@
     right: 0;
 }
 
+.task-filters {
+    position: relative;
+    z-index: 100;
+    overflow: visible;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    background: rgba(20, 25, 45, 0.98);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: visible;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
 .task-list-wrapper {
     padding: 0.5rem 0;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
 .no-tasks-container {
@@ -135,11 +156,14 @@
     margin-bottom: 1rem;
     box-shadow: var(--shadow-sm);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    position: relative;
+    z-index: 1;
 }
 
 .task-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    z-index: 2;
 }
 
 .task-card.completed {

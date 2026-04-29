@@ -22,12 +22,20 @@ const authService = {
         delete api.defaults.headers.common['Authorization'];
     },
     getCurrentUser: () => {
-        return JSON.parse(localStorage.getItem('user'));
+        try {
+            return JSON.parse(localStorage.getItem('user')) || null;
+        } catch {
+            return null;
+        }
     },
     setAuthHeaders: () => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user && user.token) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.token) {
+                api.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+            }
+        } catch {
+            // Ignore invalid user data in localStorage
         }
     }
 };

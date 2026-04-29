@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { X, Save, Loader2 } from 'lucide-react';
 import Input from './ui/Input';
 import Button from './ui/Button';
+import { GlassCard, GlowButton } from './ui/FuturisticUI';
 
 const TaskForm = ({ onSave, onClose, initialData = null }) => {
     const [title, setTitle] = useState('');
@@ -11,6 +12,7 @@ const TaskForm = ({ onSave, onClose, initialData = null }) => {
     const [category, setCategory] = useState('Study');
     const [tags, setTags] = useState('');
     const [estimatedTime, setEstimatedTime] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         if (initialData) {
@@ -29,11 +31,12 @@ const TaskForm = ({ onSave, onClose, initialData = null }) => {
         }
     }, [initialData]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
         const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
         
-        onSave({ 
+        await onSave({ 
             title, 
             description, 
             priority, 
@@ -42,53 +45,57 @@ const TaskForm = ({ onSave, onClose, initialData = null }) => {
             tags: tagsArray, 
             estimatedTime: Number(estimatedTime) || 0 
         });
+        setSubmitting(false);
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="modal animate-fade-in shadow-2xl">
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
-                    <h2 style={{ margin: 0 }}>{initialData ? 'Edit Task' : 'Create New Task'}</h2>
-                    <X 
-                        style={{ cursor: 'pointer', opacity: 0.6 }} 
-                        size={20} 
-                        onClick={onClose} 
-                    />
+        <div style={styles.overlay}>
+            <GlassCard className="modal animate-in" style={styles.modal}>
+                <div style={styles.header}>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>
+                        {initialData ? 'Update Matrix Task' : 'Initialize New Task'}
+                    </h2>
+                    <button onClick={onClose} style={styles.closeBtn}>
+                        <X size={24} />
+                    </button>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="modal-form">
-                    <div className="form-group">
-                        <label className="form-label">Task Title</label>
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>TASK DESIGNATION</label>
                         <Input
                             name="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             required
-                            placeholder="e.g., Study for Calculus Exam"
+                            placeholder="e.g., Calculus Unit 4 Synchronization"
+                            style={styles.input}
                         />
                     </div>
                     
-                    <div className="form-group">
-                        <label className="form-label">Description</label>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>SPECIFICATIONS</label>
                         <Input
                             as="textarea"
                             name="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             required
-                            placeholder="What needs to be done?"
+                            placeholder="Describe the objective parameters..."
                             rows="3"
+                            style={styles.input}
                         />
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label className="form-label">Category</label>
+                    <div style={styles.row}>
+                        <div style={{ ...styles.formGroup, flex: 1 }}>
+                            <label style={styles.label}>CATEGORY</label>
                             <Input
                                 as="select"
                                 name="category"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
+                                style={styles.input}
                             >
                                 <option value="Study">Study</option>
                                 <option value="Assignment">Assignment</option>
@@ -97,67 +104,59 @@ const TaskForm = ({ onSave, onClose, initialData = null }) => {
                             </Input>
                         </div>
 
-                        <div className="form-group">
-                            <label className="form-label">Tags</label>
-                            <Input
-                                name="tags"
-                                value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder="math, urgent..."
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label className="form-label">Priority</label>
+                        <div style={{ ...styles.formGroup, flex: 1 }}>
+                            <label style={styles.label}>PRIORITY LEVEL</label>
                             <Input
                                 as="select"
                                 name="priority"
                                 value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
+                                style={styles.input}
                             >
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
+                                <option value="Low">Low Priority</option>
+                                <option value="Medium">Medium Priority</option>
+                                <option value="High">High Priority</option>
                             </Input>
                         </div>
-                        
-                        <div className="form-group">
-                            <label className="form-label">Deadline</label>
+                    </div>
+
+                    <div style={styles.row}>
+                        <div style={{ ...styles.formGroup, flex: 1 }}>
+                            <label style={styles.label}>DEADLINE</label>
                             <Input
                                 type="date"
                                 name="deadline"
                                 value={deadline}
                                 onChange={(e) => setDeadline(e.target.value)}
                                 required
+                                style={styles.input}
+                            />
+                        </div>
+                        
+                        <div style={{ ...styles.formGroup, flex: 1 }}>
+                            <label style={styles.label}>ESTIMATED LOAD (MIN)</label>
+                            <Input
+                                type="number"
+                                name="estimatedTime"
+                                value={estimatedTime}
+                                onChange={(e) => setEstimatedTime(e.target.value)}
+                                placeholder="60"
+                                min="0"
+                                style={styles.input}
                             />
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Estimated Minutes</label>
-                        <Input
-                            type="number"
-                            name="estimatedTime"
-                            value={estimatedTime}
-                            onChange={(e) => setEstimatedTime(e.target.value)}
-                            placeholder="60"
-                            min="0"
-                        />
-                    </div>
-
-                    <div className="modal-actions">
-                        <Button type="button" variant="secondary" onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button type="submit" variant="primary">
-                            <Save size={18} />
-                            {initialData ? 'Update' : 'Create Task'}
-                        </Button>
+                    <div style={styles.footer}>
+                        <button type="button" onClick={onClose} style={styles.cancelBtn}>
+                            Abort
+                        </button>
+                        <GlowButton type="submit" disabled={submitting} style={{ padding: '12px 30px' }}>
+                            {submitting ? <Loader2 className="animate-spin" size={20} /> : <><Save size={18} /> {initialData ? 'COMMIT UPDATE' : 'INITIALIZE TASK'}</>}
+                        </GlowButton>
                     </div>
                 </form>
-            </div>
+            </GlassCard>
         </div>
     );
 };
@@ -169,55 +168,76 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.6)',
+        backgroundColor: 'rgba(2, 6, 23, 0.8)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000,
-        backdropFilter: 'blur(4px)'
+        zIndex: 10000,
+        backdropFilter: 'blur(8px)',
+        padding: '1rem'
     },
     modal: {
         width: '100%',
-        maxWidth: '600px',
+        maxWidth: '550px',
         maxHeight: '90vh',
         overflowY: 'auto',
-        margin: '1rem',
-        padding: '2rem',
+        padding: '2.5rem',
+        border: '1px solid var(--border-glass-bright)',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
     },
     header: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '1.5rem',
-        borderBottom: '1px solid var(--border-color)',
-        paddingBottom: '1rem'
+        marginBottom: '2rem',
     },
     closeBtn: {
         background: 'none',
         border: 'none',
-        color: 'var(--text-secondary)',
+        color: 'var(--text-muted)',
         cursor: 'pointer',
+        transition: 'color 0.3s ease'
     },
     form: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        gap: '1.25rem'
+    },
+    formGroup: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem'
+    },
+    label: {
+        fontSize: '0.7rem',
+        fontWeight: 800,
+        color: 'var(--text-dim)',
+        letterSpacing: '1px'
+    },
+    input: {
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid var(--border-glass)'
     },
     row: {
         display: 'flex',
-        gap: '1rem'
+        gap: '1.25rem'
     },
     footer: {
         display: 'flex',
         justifyContent: 'flex-end',
-        gap: '1rem',
+        gap: '1.25rem',
         marginTop: '1.5rem',
-        paddingTop: '1rem',
-        borderTop: '1px solid var(--border-color)'
+        paddingTop: '1.5rem',
+        borderTop: '1px solid rgba(255,255,255,0.05)'
     },
     cancelBtn: {
         backgroundColor: 'transparent',
-        color: 'var(--text-primary)',
-        border: '1px solid var(--border-color)'
+        color: 'var(--text-muted)',
+        border: 'none',
+        cursor: 'pointer',
+        fontWeight: 600,
+        fontSize: '0.9rem',
+        transition: 'color 0.3s ease'
     }
 };
 
