@@ -20,14 +20,13 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// CORS (allow frontend)
+// CORS Configuration
 app.use(
     cors({
-        origin: [
-            "http://localhost:5173",
-            "https://focusflow-ai-zeta.vercel.app"
-        ],
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        origin: process.env.ALLOWED_ORIGINS 
+            ? process.env.ALLOWED_ORIGINS.split(',') 
+            : ["http://localhost:5173", "https://focusflow-ai-zeta.vercel.app"],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         credentials: true
     })
 );
